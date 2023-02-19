@@ -1,6 +1,3 @@
-import * as R from 'ramda'
-import { overlay } from './common'
-
 const SIDC = function (sidc, standard = '2525') {
   this.type = 'MODERN'
   this.sidc = sidc
@@ -51,11 +48,6 @@ const SIDC = function (sidc, standard = '2525') {
     const echelon = Object.entries(ECHELON).find(lookup)
     return echelon ? echelon[0] : false
   })()
-}
-
-SIDC.format = function (options, code) {
-  const overlays = OVERLAYS.map(R.applyTo(options)).filter(Boolean)
-  return overlays.length ? R.compose(...overlays)(code) : code
 }
 
 export default SIDC
@@ -146,37 +138,6 @@ export const MOBILITY = {
   TOWED_ARRAY_LONG: '62'
 }
 
-// HQ, TF, F/D
-const INDICATOR = {
-  4: '1',
-  1: '2',
-  5: '3',
-  2: '4',
-  6: '5',
-  3: '6',
-  7: '7'
-}
-
 const FEINT_DUMMY = ['1', '3', '5', '7']
 const HEADQUARTERS = ['2', '3', '6', '7']
 const TASK_FORCE = ['4', '5', '6', '7']
-
-const OVERLAYS = [
-  // mutually exclusive: reality, exercise and simulation
-  options => options.reality && overlay('0', [2, 3]),
-  options => options.exercise && overlay('1', [2, 3]),
-  options => options.simulation && overlay('2', [2, 3]),
-  options => options.identity && overlay(IDENTITY[options.identity], [3, 4]),
-  options => options.status && overlay(STATUS[options.status], [6, 7]),
-  // mutually exclusive: mobility and echelon
-  options => options.mobility && overlay(MOBILITY[options.mobility], [8, 10]),
-  options => options.echelon && overlay(ECHELON[options.echelon], [8, 10]),
-  options => {
-    const indicator =
-      (options.headquarters ? 0x01 : 0) |
-      (options.taskForce ? 0x02 : 0) |
-      (options.feint ? 0x04 : 0) |
-      (options.dummy ? 0x04 : 0)
-    return indicator && overlay(INDICATOR[indicator], [7, 8])
-  }
-]

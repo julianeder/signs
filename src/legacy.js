@@ -1,6 +1,3 @@
-import * as R from 'ramda'
-import { overlay } from './common'
-
 const SIDC = function (sidc, standard = '2525') {
   this.type = 'LEGACY'
   this.sidc = sidc.replaceAll('*', '-')
@@ -37,41 +34,23 @@ const SIDC = function (sidc, standard = '2525') {
   // TODO: limit to equipment
 
   this.mobility = (() => {
+    // TODO: direct lookup, reverse MOBILITY key/value
     const lookup = ([_, code]) => code === parts.modifiers
     const mobility = Object.entries(MOBILITY).find(lookup)
     return mobility ? mobility[0] : false
   })()
 
   this.echelon = !this.mobility && (() => {
+    // TODO: direct lookup, reverse ECHELON key/value
     const lookup = ([_, code]) => code === parts.modifier11
     const echelon = Object.entries(ECHELON).find(lookup)
     return echelon ? echelon[0] : false
   })()
 }
 
-SIDC.format = function (options, code) {
-  const overlays = OVERLAYS.map(R.applyTo(options)).filter(Boolean)
-  return overlays.length ? R.compose(...overlays)(code) : code
-}
-
 export default SIDC
 
-const IDENTITY = {
-  PENDING: ['P', 'G'],
-  UNKNOWN: ['U', 'W'],
-  ASSUMED_FRIEND: ['A', 'M'],
-  FRIEND: ['F', 'D'],
-  NEUTRAL: ['N', 'L'],
-
-  // Joker. A friendly track acting as a suspect for exercise purposes.
-  SUSPECT: ['S', 'J'],
-  JOKER: ['J', 'J'],
-
-  // Faker. A friendly track acting as a hostile for exercise purposes.
-  HOSTILE: ['H', 'K'],
-  FAKER: ['K', 'K']
-}
-
+// TODO: use Set()
 const PENDING = ['P', 'A', 'S', 'G', 'M']
 const EXERCISE = ['D', 'G', 'J', 'K', 'L', 'M', 'W']
 
@@ -98,8 +77,6 @@ const DIMENSION = [
   [/^G/, 'CONTROL'] // control measures aka tactical graphics
 ]
 
-// G.O.SBW---*****
-
 const FRAMELESS = [
   /^..S.(O-----|ED----|EP----|EV----|ZM----|ZN----|ZI----)/,
   /^E.N.(AA----|AB----|AC----|AD----|AE----|AG----|BB----|BC----|BF----|BM----|CA----|CB----|CC----|CD----|CE----)/,
@@ -107,8 +84,6 @@ const FRAMELESS = [
   /^..U.(ND----|NBS---|NBR---|NBW---|NM----|NA----)/,
   /^G.(?!O.[VLPI])/,
 ]
-
-// SFUPWD----*****
 
 // With unfilled frames.
 const UNFILLED = [
@@ -163,37 +138,7 @@ const ECHELON = {
   COMMAND: 'N'
 }
 
-// HQ (0x01), TF (0x02), F/D (0x04)
-const INDICATOR = {
-  1: 'A', // HQ
-  3: 'B', // TF, HQ
-  5: 'C', // FD, HQ
-  7: 'D', // FD, TF, HQ
-  2: 'E', // TF
-  4: 'F', // FD
-  6: 'G'  // FD, TF
-}
-
+// TODO: use Set()
 const FEINT_DUMMY = ['C', 'D', 'F', 'G']
 const HEADQUARTERS = ['A', 'B', 'C', 'D']
 const TASK_FORCE = ['B', 'D', 'E', 'G']
-
-const OVERLAYS = [
-  options => options.identity && overlay(
-    IDENTITY
-      [options.identity]
-      [options.exercise ? 1 : 0],
-    [1, 2]
-  ),
-  options => options.status && overlay(STATUS[options.status], [3, 4]),
-  options => options.mobility && overlay(MOBILITY[options.mobility], [10, 12]),
-  options => options.echelon && overlay(ECHELON[options.echelon], [11, 12]),
-  options => {
-    const indicator =
-      (options.headquarters ? 0x01 : 0) |
-      (options.taskForce ? 0x02 : 0) |
-      (options.feint ? 0x04 : 0) |
-      (options.dummy ? 0x04 : 0)
-    return indicator && overlay(INDICATOR[indicator], [10, 11])
-  }
-]
