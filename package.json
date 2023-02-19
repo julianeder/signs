@@ -6,13 +6,25 @@
   "main": "dist/index.js",
   "scripts": {
     "prepare": "npm run build",
-    "build": "webpack"
+    "build": "webpack",
+    "test": "mocha 'test/**/*.test.js' --recursive",
+    "coverage": "c8 --all --include 'src/**/*' --reporter=html mocha 'test/**/*.test.js' --recursive"
   },
-  "keywords": ["app6", "milstd-2525", "military", "symbology"],
+  "keywords": [
+    "app6",
+    "milstd-2525",
+    "military",
+    "symbology"
+  ],
   "author": "horst.dehmer@syncpoint.io",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/register": "^7.18.9",
     "babel-loader": "^9.1.2",
+    "c8": "^7.13.0",
+    "mocha": "^10.2.0",
     "terser-webpack-plugin": "^5.3.6",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"

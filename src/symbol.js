@@ -16,7 +16,7 @@ export const Symbol = function (options) {
 
   // Normalize options:
   const effectiveOptions = { ...options, ...sidc }
-  effectiveOptions.frame = (options.frame === true && !sidc.frameless) || false
+  effectiveOptions.frame = options.frame !== false && !sidc.frameless
   effectiveOptions.strokeWidth = options.strokeWidth || 4
   effectiveOptions.strokeColor = options.strokeColor || 'black'
   effectiveOptions.outlineWidth = options.outlineWidth || 0
