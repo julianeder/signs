@@ -27,7 +27,7 @@ const icon = (key, styles) =>
 
 export default ({ generic, affiliation, styles }) => {
 
-  // Check tactical graphocs previews first:
+  // Check tactical graphics previews first:
   if (previews[generic]) {
     return () => [[0, 0, 200, 200], previews[generic]]
   }
