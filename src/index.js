@@ -1,8 +1,10 @@
 import { legacy } from './standard'
+import { modern } from './standard'
 import { skkm } from './skkm'
 
 const factories = [
   legacy,
+  modern,
   skkm
 ]
 
