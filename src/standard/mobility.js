@@ -1,4 +1,4 @@
-import * as BBox from './bbox'
+import * as BBox from '../bbox'
 import MOBILITY from './mobility.json'
 
 const OFFSET = {

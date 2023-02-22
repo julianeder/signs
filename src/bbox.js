@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import pathbbox from 'svg-path-bbox'
-import { width as textWidth } from './measure'
+import * as Text from './text'
 
 export const resize = R.curry(([dx, dy], bbox) => [
   bbox[0] - dx,
@@ -50,7 +50,7 @@ const text = ({ x, y, text, ...rest}) => {
   const fontSize = rest['font-size'] || 40
   const textAnchor = rest['text-anchor'] || 'start'
   const factor = fontSize / 30
-  const width = textWidth(text) * factor
+  const width = Text.width(text) * factor
   return textAnchor === 'start'
     ? [x, y - fontSize, x + width, y]
     : textAnchor === 'end'

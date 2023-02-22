@@ -1,4 +1,4 @@
-import * as BBox from './bbox'
+import * as BBox from '../bbox'
 
 export const taskForce = ({ taskForce, echelon, outline, styles }) => {
   if (!taskForce) return box => [box, []]

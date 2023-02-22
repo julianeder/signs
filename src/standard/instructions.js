@@ -1,42 +1,39 @@
+import * as BBox from '../bbox'
+import * as Layout from '../layout'
+import * as Styles from './styles'
 import * as Frame from './frame'
-import * as Echelon from './echelon'
 import * as Installation from './installation'
+import * as Echelon from './echelon'
+import * as Engagement from './engagement'
 import * as Mobility from './mobility'
 import * as Modifiers from './modifiers'
-import * as Engagement from './engagement'
-import { Style } from './style'
-import * as BBox from './bbox'
 import icon from './icons'
 import fields from './fields'
-import { SIDC } from './sidc'
-import * as Layout from './layout'
 
-export const Symbol = function (options) {
-  const sidc = SIDC.of(options.sidc)
+export const instructions = (options, meta) => {
 
-  // Normalize options:
-  const effectiveOptions = { ...options, ...sidc }
-  effectiveOptions.frame = options.frame !== false && !sidc.frameless
-  effectiveOptions.strokeWidth = options.strokeWidth || 4
-  effectiveOptions.strokeColor = options.strokeColor || 'black'
-  effectiveOptions.outlineWidth = options.outlineWidth || 0
-  effectiveOptions.outlineColor = options.outlineColor || false
-  effectiveOptions.outline = (options.outline === false || effectiveOptions.outlineWidth === 0 || !effectiveOptions.outlineColor)
+  const hints = {}
+  hints.frame = options.frame !== false && !meta.frameless
+  hints.modifiers = options.modifiers
+  hints.infoFields = (options.modifiers && options.infoFields) || false
+  hints.engagement = options?.modifiers?.AT
+  hints.strokeWidth = options.strokeWidth || 4
+  hints.strokeColor = options.strokeColor || 'black'
+  hints.outlineWidth = options.outlineWidth || 0
+  hints.outlineColor = options.outlineColor || false
+  hints.outline = (options.outline === false || options.outlineWidth === 0 || !options.outlineColor)
     ? false
     : true
 
-
-  const styles = Style.of(sidc, effectiveOptions)
   const context = {
-    ...options,
-    ...effectiveOptions,
-    styles,
-    ...sidc
+    ...meta,
+    ...hints,
+    ...Styles.styles(meta, hints)
   }
 
   const padding = 2 + Math.max(
-    styles.strokeWidth('style:default'),
-    styles.strokeWidth('style:outline')
+    context['style:default']['stroke-width'],
+    context['style:outline']['stroke-width'],
   ) / 2
 
   const [bbox, children] = Layout.compose([
@@ -66,7 +63,7 @@ export const Symbol = function (options) {
 
   const [width, height] = BBox.extent(bbox)
   const viewBox = [bbox[0], bbox[1], width, height]
-  this.size = { width, height }
+  const size = { width, height }
 
   // Poor man's (SVG) layers:
   children.sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0))
@@ -80,7 +77,7 @@ export const Symbol = function (options) {
     height,
     viewBox,
     children,
-    ...styles['style:default']
+    ...context['style:default']
   }
 
   const array = x => x ? Array.isArray(x) ? x : [x] : []
@@ -92,9 +89,8 @@ export const Symbol = function (options) {
 
 
   const xml = document => {
-    const { type, children, zIndex, style, ...properties } = document
-    const props = { ...properties, ...(styles[style] || {}) }
-    const propertyList = Object.entries(props).map(([key, value]) => {
+    const { type, children, zIndex, ...properties } = document
+    const propertyList = Object.entries(properties).map(([key, value]) => {
       if (key === 'text') return ''
       const type = typeof value
       if (type === 'string') return `${key}="${value}"`
@@ -110,15 +106,5 @@ export const Symbol = function (options) {
     return `<${type} ${propertyList}>${childList}</${type}>`
   }
 
-  this.svg = xml(document)
-}
-
-Symbol.of = (options) => new Symbol(options)
-
-Symbol.prototype.getSize = function () {
-  return this.size
-}
-
-Symbol.prototype.asSVG = function () {
-  return this.svg
+  return [size, xml(document)]
 }

@@ -1,4 +1,4 @@
-import * as BBox from './bbox'
+import * as BBox from '../bbox'
 
 export const installation = ({ installation, affiliation, outline, styles }) => {
   if (!installation) return bbox => [bbox, []]

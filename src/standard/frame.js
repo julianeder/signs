@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import * as BBox from './bbox'
+import * as BBox from '../bbox'
 import { NOOP } from './common'
 import FRAME from './frame.json'
 import DECORATIONS from './decorations.json'
@@ -24,12 +24,12 @@ const frames = Object.entries(FRAME).reduce((acc, [key, frame]) => {
 
 const instruction =
   (type, style, zIndex = 0) =>
-    ({ dimension, affiliation, styles }) => {
-      const key = `${dimension}+${affiliation}`
+    options => {
+      const key = `${options.dimension}+${options.affiliation}`
       const frame = frames[key]
-      const instructions = [{ ...frame[type], ...styles[style], zIndex }]
+      const instructions = [{ ...frame[type], ...options[style], zIndex }]
       const decoration = DECORATIONS[key]
-      if (decoration) instructions.push({ ...decoration, ...styles['style:frame/decoration'], zIndex})
+      if (decoration) instructions.push({ ...decoration, ...options['style:frame/decoration'], zIndex})
       return () => [frame.bbox, instructions]
     }
 

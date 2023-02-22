@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import * as BBox from './bbox'
+import * as BBox from '../bbox'
 import ECHELON from './echelon.json'
 
 const echelons = Object.entries(ECHELON)
@@ -10,12 +10,12 @@ const echelons = Object.entries(ECHELON)
 
 const instruction =
   (style, zIndex) =>
-    ({ echelon, styles }) =>
+    options =>
       box => {
-        const [bbox, children] = echelons[echelon]
+        const [bbox, children] = echelons[options.echelon]
         const translation = BBox.translate([0, box[1]], bbox)
         const transform = `translate(0, ${box[1]})`
-        const group = { type: 'g', children, ...styles[style], transform, zIndex }
+        const group = { type: 'g', children, ...options[style], transform, zIndex }
         return [translation, group]
       }
 

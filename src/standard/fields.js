@@ -1,8 +1,9 @@
-import * as BBox from './bbox'
+import * as BBox from '../bbox'
+import * as Text from '../text'
 import templates from './templates.json'
 import fields from './fields.json'
 
-const fromTemplate = (template, modifiers, styles, outline) => box => {
+const fromTemplate = (template, options) => box => {
   const gap = 16
   const [width, height] = BBox.extent(box)
 
@@ -36,7 +37,7 @@ const fromTemplate = (template, modifiers, styles, outline) => box => {
     zIndex
   })
 
-  const line = slots => slots.map(key => modifiers[key]).filter(Boolean).join('/')
+  const line = slots => slots.map(key => options.modifiers[key]).filter(Boolean).join('/')
   const [bbox, instructions] = Object
     .entries(template)
     .reduce((acc, [placement, slots]) => {
@@ -46,22 +47,22 @@ const fromTemplate = (template, modifiers, styles, outline) => box => {
       if (lines.filter(Boolean).length === 0) return acc
 
       const style = `style:text-amplifiers/${placement}`
-      const extent = styles.textExtent(lines, style)
+      const extent = Text.extent(lines, options[style]['font-size'])
       const box = boxes[placement](extent)
       const x = placement === 'right' ? 0 : extent[0]
       const dy = extent[1] / lines.length
       const text = (line, index) => makeText(x, index * dy, line)
       const children = lines.map(text)
-      acc[1].push(makeGroup(box, children, styles[style], 0 ))
-      if (outline) acc[1].push(makeGroup(box, children, { ...styles[style], ...styles['style:outline'] }, -1))
+      acc[1].push(makeGroup(box, children, options[style], 0 ))
+      if (options.outline) acc[1].push(makeGroup(box, children, { ...options[style], ...options['style:outline'] }, -1))
       return [BBox.merge(acc[0], box), acc[1]]
     }, [BBox.NULL, []])
 
   return [bbox, instructions]
 }
 
-const fromFields = (fields, modifiers, styles, outline) => box => {
-  const stuff = Object.entries(modifiers).reduce((acc, [key, value]) => {
+const fromFields = (fields, options) => box => {
+  const stuff = Object.entries(options.modifiers).reduce((acc, [key, value]) => {
     if (!fields[key]) return acc
     if (Array.isArray(fields[key])) {
       fields[key].forEach(field => acc.push({ ...field, text: value }))
@@ -77,13 +78,13 @@ const fromFields = (fields, modifiers, styles, outline) => box => {
 }
 
 /* eslint-disable import/no-anonymous-default-export */
-export default ({ type, dimension, infoFields, styles, outline, generic, ...modifiers }) => {
-  if (!infoFields) return box => [box, []]
-  if (!modifiers) return box => [box, []]
+export default options => {
+  if (!options.infoFields) return box => [box, []]
 
-  if (fields[generic]) return fromFields(fields[generic], modifiers, styles, outline)
-  const template = templates[`${type}+${dimension}`]
+  if (fields[options.generic]) return fromFields(fields[options.generic], options)
+  const template = templates[`${options.type}+${options.dimension}`]
+  console.log('template', template)
   if (!template) return box => [box, []]
 
-  return fromTemplate(template, modifiers, styles, outline)
+  return fromTemplate(template, options)
 }

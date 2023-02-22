@@ -1,4 +1,4 @@
-import * as BBox from './bbox'
+import * as BBox from '../bbox'
 
 export const engagement = ({ AO, outline, styles }) => {
   if (!AO) return box => [box, []]
