@@ -55,7 +55,7 @@ export const context = options => {
     const instruction = { type: 'text', text, x: box[2] + spacing, y: 60, ...options['style:frame/context'] }
     const bbox = [box[0], 60 - 25, box[2] + spacing + 22, box[3]]
     instructions.push(instruction)
-    if (outline) instructions.push({ ...instruction, ...options['style:outline'] })
+    if (options.outline) instructions.push({ ...instruction, ...options['style:outline'] })
     return [bbox, instructions]
   }
 }
