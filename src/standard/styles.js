@@ -64,7 +64,8 @@ export const styles = function (meta, hints) {
     'stroke': hints.outlineColor,
     'stroke-width': hints.strokeWidth + hints.outlineWidth * 2,
     'stroke-linejoin': 'round',
-    'stroke-linecap': 'round'
+    'stroke-linecap': 'round',
+    zIndex: -1
    }
 
   styles['style:frame/shape'] = meta.unfilled
@@ -75,7 +76,8 @@ export const styles = function (meta, hints) {
     'stroke': OFF_WHITE,
     'stroke-width': hints.strokeWidth,
     // pending state has precedence over planned status:
-    'stroke-dasharray': meta.pending ? '4,4' : meta.status === 'PLANNED' ? '8,12' : 'none'
+    'stroke-dasharray': meta.pending ? '4,4' : meta.status === 'PLANNED' ? '8,12' : 'none',
+    zIndex: 1
    }
 
    styles['style:frame/decoration'] = {

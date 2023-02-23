@@ -21,14 +21,13 @@ const offsets = Object.entries(MOBILITY).reduce((acc, [key, children]) => {
   return acc
 }, {})
 
-export const mobility = ({ mobility, affiliation, outline, styles }) => {
-  if (!mobility) return bbox => [bbox, []]
+export const mobility = options => {
+  const { bbox, offset, ...group } = offsets[options.mobility]
 
   return box => {
-    const { bbox, offset, ...group } = offsets[mobility]
-    const dy = affiliation === 'NEUTRAL' ? box[3] + offset : box[3]
+    const dy = options.affiliation === 'NEUTRAL' ? box[3] + offset : box[3]
     const instructions = [{ ...group, transform: `translate(0, ${dy})` }]
-    if (outline) instructions.push({ ...group, transform: `translate(0, ${dy})`, ...styles['style:outline'], zIndex: -1 })
+    if (options.outline) instructions.push({ ...group, transform: `translate(0, ${dy})`, ...options['style:outline'] })
     return [BBox.translate([0, dy], bbox), instructions]
   }
 }

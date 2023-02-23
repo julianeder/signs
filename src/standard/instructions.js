@@ -36,31 +36,29 @@ export const instructions = (options, meta) => {
     context['style:outline']['stroke-width'],
   ) / 2
 
-  const [bbox, children] = Layout.compose([
-    Frame.frame(context),
-    Frame.overlay(context),
-    Frame.outline(context),
-    icon(context),
-    Installation.installation(context),
-    Layout.overlay(
-      Echelon.outline(context),
-      Echelon.echelon(context)
-    ),
-    Engagement.engagement(context),
-    Frame.context(context),
-    Layout.overlay(
-      Mobility.mobility(context),
-      Modifiers.taskForce(context),
-      Modifiers.feintDummy(context),
-      Modifiers.headquartersStaff(context),
-      fields(context)
-    ),
+  const echelon = []
+  const modifiers = []
+  const symbol = []
 
-    // bbox => [bbox, styles.rect(bbox, 'style:debug')],
-    // Adjust bbox according stroke/outline width:
-    bbox => [BBox.resize([padding, padding], bbox), []]
-  ])
+  if (context.echelon) echelon.push(Echelon.echelon(context))
+  if (context.echelon && context.outline) echelon.push(Echelon.outline(context))
+  if (context.mobility) modifiers.push(Mobility.mobility(context))
+  if (context.taskForce) modifiers.push(Modifiers.taskForce(context))
+  if (context.feintDummy) modifiers.push(Modifiers.feintDummy(context))
+  if (context.headquarters) modifiers.push(Modifiers.headquartersStaff(context))
+  if (context.infoFields) modifiers.push(fields(context))
+  if (context.frame && context.dimension !== 'CONTROL') symbol.push(Frame.frame(context))
+  if (context.status !== 'PRESENT' || context.pending) symbol.push(Frame.overlay(context))
+  if (context.frame && context.outline) symbol.push(Frame.outline(context))
+  symbol.push(icon(context))
+  if (context.installation) symbol.push(Installation.installation(context))
+  if (echelon.length) symbol.push(Layout.overlay(...echelon))
+  if (context.modifiers.AO) symbol.push(Engagement.engagement(context))
+  symbol.push(Frame.context(context))
+  if (modifiers.length) symbol.push(Layout.overlay(...modifiers))
+  symbol.push(bbox => [BBox.resize([padding, padding], bbox), []])
 
+  const [bbox, children] = Layout.compose(symbol)
   const [width, height] = BBox.extent(bbox)
   const viewBox = [bbox[0], bbox[1], width, height]
   const size = { width, height }

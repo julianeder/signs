@@ -1,6 +1,5 @@
 import * as R from 'ramda'
 import * as BBox from '../bbox'
-import { NOOP } from './common'
 import FRAME from './frame.json'
 import DECORATIONS from './decorations.json'
 
@@ -23,54 +22,40 @@ const frames = Object.entries(FRAME).reduce((acc, [key, frame]) => {
 }, {})
 
 const instruction =
-  (type, style, zIndex = 0) =>
+  (type, style) =>
     options => {
       const key = `${options.dimension}+${options.affiliation}`
       const frame = frames[key]
-      const instructions = [{ ...frame[type], ...options[style], zIndex }]
+      const instructions = [{ ...frame[type], ...options[style] }]
       const decoration = DECORATIONS[key]
-      if (decoration) instructions.push({ ...decoration, ...options['style:frame/decoration'], zIndex})
+      if (decoration) instructions.push({ ...decoration, ...options['style:frame/decoration']})
       return () => [frame.bbox, instructions]
     }
 
-export const outline = R.ifElse(
-  ({ frame, outline }) => frame && outline,
-  instruction('closed', 'style:outline', -1),
-  NOOP
-)
+export const outline = instruction('closed', 'style:outline')
+export const frame = instruction('open', 'style:frame/shape')
+export const overlay = instruction('open', 'style:frame/overlay')
 
-export const frame = R.ifElse(
-  ({ frame, dimension }) => frame && dimension !== 'CONTROL',
-  instruction('open', 'style:frame/shape', 0),
-  NOOP
-)
-
-export const overlay = R.ifElse(
-  ({ frame, status, pending }) => frame && (status !== 'PRESENT' || pending),
-  instruction('open', 'style:frame/overlay', 1),
-  NOOP
-)
-
-export const context = ({ dimension, affiliation, outline, styles, ...rest }) => {
+export const context = options => {
   const text = R.cond([
     [R.propEq('joker', true), R.always('J')],
     [R.propEq('faker', true), R.always('K')],
     [R.propEq('context', 'EXERCISE'), R.always('X')],
     [R.propEq('context', 'SIMULATION'), R.always('S')],
     [R.T, R.always(undefined)]
-  ])(rest)
+  ])(options)
 
   if (!text) return box => [box, []]
 
-  const key = `${dimension}:${affiliation}`
+  const key = `${options.dimension}:${options.affiliation}`
   const spacing = key.match(/(UNKNOWN$)|(SUBSURFACE:HOSTILE)/) ? -10 : 10
 
   return box => {
     const instructions = []
-    const instruction = { type: 'text', text, x: box[2] + spacing, y: 60, ...styles['style:frame/context'] }
+    const instruction = { type: 'text', text, x: box[2] + spacing, y: 60, ...options['style:frame/context'] }
     const bbox = [box[0], 60 - 25, box[2] + spacing + 22, box[3]]
     instructions.push(instruction)
-    if (outline) instructions.push({ ...instruction, ...styles['style:outline'], zIndex: -1 })
+    if (outline) instructions.push({ ...instruction, ...options['style:outline'] })
     return [bbox, instructions]
   }
 }

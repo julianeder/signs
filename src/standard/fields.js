@@ -29,12 +29,11 @@ const fromTemplate = (template, options) => box => {
     'dominant-baseline': 'hanging'
   })
 
-  const makeGroup = (box, children, style, zIndex) => ({
+  const makeGroup = (box, children, style) => ({
     type: 'g',
     children,
     transform: `translate(${box[0]},${box[1]})`,
-    ...style,
-    zIndex
+    ...style
   })
 
   const line = slots => slots.map(key => options.modifiers[key]).filter(Boolean).join('/')
@@ -53,8 +52,8 @@ const fromTemplate = (template, options) => box => {
       const dy = extent[1] / lines.length
       const text = (line, index) => makeText(x, index * dy, line)
       const children = lines.map(text)
-      acc[1].push(makeGroup(box, children, options[style], 0 ))
-      if (options.outline) acc[1].push(makeGroup(box, children, { ...options[style], ...options['style:outline'] }, -1))
+      acc[1].push(makeGroup(box, children, options[style] ))
+      if (options.outline) acc[1].push(makeGroup(box, children, { ...options[style], ...options['style:outline'] }))
       return [BBox.merge(acc[0], box), acc[1]]
     }, [BBox.NULL, []])
 
@@ -79,11 +78,8 @@ const fromFields = (fields, options) => box => {
 
 /* eslint-disable import/no-anonymous-default-export */
 export default options => {
-  if (!options.infoFields) return box => [box, []]
-
   if (fields[options.generic]) return fromFields(fields[options.generic], options)
   const template = templates[`${options.type}+${options.dimension}`]
-  console.log('template', template)
   if (!template) return box => [box, []]
 
   return fromTemplate(template, options)

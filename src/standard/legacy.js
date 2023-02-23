@@ -16,30 +16,31 @@ const meta = options => {
   const meta = {}
   const [sidc, standard] = options.sidc.split('+')
 
-  const parts = {
-    scheme: sidc[0],
-    identity: sidc[1],
-    dimension: sidc[2],
-    status: sidc[3],
-    function: sidc.substring(4, 10),
-    modifier10: sidc[10],
-    modifier11: sidc[11],
-    modifiers: sidc.substring(10, 12)
-  }
-
   meta.type = 'LEGACY'
   meta.sidc = sidc.toUpperCase().replaceAll('*', '-')
   meta.standard = standard || '2525'
   meta.generic = sidc[0] + '-' + sidc[2] + '-' + (sidc.substring(4, 10) || '------')
+
+  const parts = {
+    scheme: meta.sidc[0],
+    identity: meta.sidc[1],
+    dimension: meta.sidc[2],
+    status: meta.sidc[3],
+    function: meta.sidc.substring(4, 10),
+    modifier10: meta.sidc[10],
+    modifier11: meta.sidc[11],
+    modifiers: meta.sidc.substring(10, 12)
+  }
+
   meta.affiliation = AFFILIATION[parts.identity]
   meta.joker = parts.identity === 'J'
   meta.faker = parts.identity === 'K'
   meta.context = EXERCISE.has(parts.identity) ? 'EXERCISE' : 'REALITY'
   meta.status = STATUS[parts.status]
-  meta.dimension = DIMENSION.find(([regex]) => sidc.match(regex))[1]
-  meta.frameless = FRAMELESS.some(regex => sidc.match(regex))
-  meta.unfilled = UNFILLED.some(regex => sidc.match(regex))
-  meta.civilian = CIVILIAN.some(regex => sidc.match(regex))
+  meta.dimension = DIMENSION.find(([regex]) => meta.sidc.match(regex))[1]
+  meta.frameless = FRAMELESS.some(regex => meta.sidc.match(regex))
+  meta.unfilled = UNFILLED.some(regex => meta.sidc.match(regex))
+  meta.civilian = CIVILIAN.some(regex => meta.sidc.match(regex))
   meta.pending = PENDING.has(parts.identity)
   meta.installation = meta.dimension === 'UNIT' && parts.modifiers === 'H-'
   meta.taskForce = TASK_FORCE.has(parts.modifier10)
