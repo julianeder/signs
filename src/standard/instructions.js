@@ -7,6 +7,7 @@ import * as Echelon from './echelon'
 import * as Engagement from './engagement'
 import * as Mobility from './mobility'
 import * as Modifiers from './modifiers'
+import * as Condition from './condition'
 import icon from './icons'
 import fields from './fields'
 
@@ -48,8 +49,10 @@ export const instructions = (options, meta) => {
   if (context.headquarters) modifiers.push(Modifiers.headquartersStaff(context))
   if (context.infoFields) modifiers.push(fields(context))
   if (context.frame && context.dimension !== 'CONTROL') symbol.push(Frame.frame(context))
-  if (context.frame && (context.status !== 'PRESENT' || context.pending)) symbol.push(Frame.overlay(context))
+  if (context.frame && (!context.present || context.pending)) symbol.push(Frame.overlay(context))
   if (context.frame && context.outline) symbol.push(Frame.outline(context))
+  if (context.condition) symbol.push(Condition.condition(context))
+
   symbol.push(icon(context))
   if (context.installation) symbol.push(Installation.installation(context))
   if (echelon.length) symbol.push(Layout.overlay(...echelon))

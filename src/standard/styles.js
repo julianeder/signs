@@ -61,7 +61,7 @@ export const styles = function (meta, hints) {
   styles['style:text-amplifiers/bottom'] = {}
 
   styles['style:outline'] = {
-    'stroke': hints.outlineColor,
+    stroke: hints.outlineColor,
     'stroke-width': hints.strokeWidth + hints.outlineWidth * 2,
     'stroke-linejoin': 'round',
     'stroke-linecap': 'round',
@@ -69,14 +69,19 @@ export const styles = function (meta, hints) {
    }
 
   styles['style:frame/shape'] = meta.unfilled
-    ? { 'stroke-width': hints.strokeWidth, fill: "none", stroke: COLORS.frameColor[key] }
+    ? { 'stroke-width': hints.strokeWidth, fill: 'none', stroke: COLORS.frameColor[key] }
     : { 'stroke-width': hints.strokeWidth, fill: frameFill }
 
    styles['style:frame/overlay'] = {
-    'stroke': OFF_WHITE,
+    stroke: OFF_WHITE,
     'stroke-width': hints.strokeWidth,
     // pending state has precedence over planned status:
-    'stroke-dasharray': meta.pending ? '4,4' : meta.status === 'PLANNED' ? '8,12' : 'none',
+    'stroke-dasharray':
+      meta.pending
+        ? '4,4'
+        : meta.planned
+          ? '8,12'
+          : 'none',
     zIndex: 1
    }
 
@@ -86,17 +91,17 @@ export const styles = function (meta, hints) {
    }
 
    styles['style:echelon'] = {
-    'stroke': hints.strokeColor,
+    stroke: hints.strokeColor,
     'stroke-width': hints.strokeWidth,
-    'fill': hints.strokeColor
+    fill: hints.strokeColor
    }
 
    styles['style:installation'] = styles['style:echelon']
 
    styles['style:engagement/text'] = {
-    'text-anchor': "middle",
+    'text-anchor': 'middle',
     'font-size': 22,
-    'font-weight': "bold",
+    'font-weight': 'bold',
     'stroke-width': 4,
     stroke: 'none',
     fill: 'black'
@@ -119,6 +124,12 @@ export const styles = function (meta, hints) {
     ? { stroke: 'black', 'stroke-width': 3, fill: frameFill }
     : { stroke: 'black', 'stroke-width': 3, fill: OFF_WHITE }
 
+  styles['style:condition'] = {
+    fill: COLORS.condition[meta.condition] || 'none',
+    stroke: hints.strokeColor,
+    'stroke-width': hints.strokeWidth,
+  }
+
   return styles
 }
 
@@ -128,11 +139,11 @@ const OFF_WHITE = 'rgb(239,239,239)'
 
 const COLORS = {
   'FRAME-FILL+DARK': {
-    CIVILIAN: "rgb(80,0,80)",
-    FRIEND: "rgb(0,107,140)",
-    HOSTILE: "rgb(200,0,0)",
-    NEUTRAL: "rgb(0,160,0)",
-    UNKNOWN: "rgb(225,220,0)"
+    CIVILIAN: 'rgb(80,0,80)',
+    FRIEND: 'rgb(0,107,140)',
+    HOSTILE: 'rgb(200,0,0)',
+    NEUTRAL: 'rgb(0,160,0)',
+    UNKNOWN: 'rgb(225,220,0)'
   },
   ENGAGEMENT: {
     TARGET: 'rgb(255, 0, 0)',
@@ -140,11 +151,17 @@ const COLORS = {
     EXPIRED: 'rgb(255, 120, 0)'
   },
   frameColor: {
-    CIVILIAN: "rgb(255,0,255)",
-    FRIEND: "rgb(0, 255, 255)",
-    HOSTILE: "rgb(255, 0, 0)",
-    NEUTRAL: "rgb(0, 255, 0)",
-    UNKNOWN: "rgb(255, 255, 0)"
+    CIVILIAN: 'rgb(255,0,255)',
+    FRIEND: 'rgb(0, 255, 255)',
+    HOSTILE: 'rgb(255, 0, 0)',
+    NEUTRAL: 'rgb(0, 255, 0)',
+    UNKNOWN: 'rgb(255, 255, 0)'
+  },
+  condition: {
+    FULLY_CAPABLE: 'rgb(0,255,0)',
+    DAMAGED: 'rgb(255,255,0)',
+    DESTROYED: 'rgb(255,0,0)',
+    FULL_TO_CAPACITY: 'rgb(0, 180, 240)'
   }
 }
 

@@ -37,6 +37,11 @@ const meta = options => {
   meta.faker = parts.identity === 'K'
   meta.context = EXERCISE.has(parts.identity) ? 'EXERCISE' : 'REALITY'
   meta.status = STATUS[parts.status]
+  meta.present = parts.status !== 'A'
+  meta.anticipated = !meta.present
+  meta.planned = meta.anticipated
+  meta.condition = CONDITION[parts.status]
+
   meta.dimension = DIMENSION.find(([regex]) => meta.sidc.match(regex))[1]
   meta.frameless = FRAMELESS.some(regex => meta.sidc.match(regex))
   meta.unfilled = UNFILLED.some(regex => meta.sidc.match(regex))
@@ -70,11 +75,14 @@ const TASK_FORCE = new Set(['B', 'D', 'E', 'G'])
 
 const STATUS = {
   A: 'PLANNED', // also ANTICIPATED
-  P: 'PRESENT',
-  C: 'FULLY_CAPABLE',
-  D: 'DAMAGED',
-  X: 'DESTROYED',
-  F: 'FULL_TO_CAPACITY'
+  P: 'PRESENT'
+}
+
+const CONDITION = {
+  C: 'FULLY_CAPABLE', // PRESENT
+  D: 'DAMAGED', // PRESENT
+  X: 'DESTROYED', // PRESENT
+  F: 'FULL_TO_CAPACITY' // PRESENT
 }
 
 const DIMENSION = [
