@@ -10,7 +10,7 @@ export const direction = options => {
       ...options['style:direction']
     }]
 
-    const [dx, dy] = options.dimension === 'UNIT'
+    const [dx, dy] = options.ground
       ? options.headquarters
         ? [box[0], box[3] + 100]
         : [100, box[3] + 100]
@@ -31,7 +31,7 @@ export const direction = options => {
       ...options['style:direction']
     }]
 
-    if (options.dimension === 'UNIT' && !options.headquarters) {
+    if (options.ground && !options.headquarters) {
       instructions.push({
         type: "path",
         d: `M 100,${box[3]}

@@ -43,6 +43,7 @@ const meta = options => {
   meta.condition = CONDITION[parts.status]
 
   meta.dimension = DIMENSION.find(([regex]) => meta.sidc.match(regex))[1]
+  meta.ground = GROUND.some(regex => meta.sidc.match(regex))
   meta.frameless = FRAMELESS.some(regex => meta.sidc.match(regex))
   meta.unfilled = UNFILLED.some(regex => meta.sidc.match(regex))
   meta.civilian = CIVILIAN.some(regex => meta.sidc.match(regex))
@@ -99,6 +100,11 @@ const DIMENSION = [
   [/^..[EFGOSXZ]/, 'UNIT'], // incl. SOF, EMS
   [/^..U/, 'SUBSURFACE' ],
   [/^G/, 'CONTROL'] // control measures aka tactical graphics
+]
+
+const GROUND = [
+  /^..G/,
+  /^O.V/
 ]
 
 const FRAMELESS = [
