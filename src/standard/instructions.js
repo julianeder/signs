@@ -8,6 +8,7 @@ import * as Engagement from './engagement'
 import * as Mobility from './mobility'
 import * as Modifiers from './modifiers'
 import * as Condition from './condition'
+import * as Direction from './direction'
 import icon from './icons'
 import fields from './fields'
 
@@ -18,6 +19,7 @@ export const instructions = (options, meta) => {
   hints.modifiers = options.modifiers
   hints.infoFields = (options.modifiers && options.infoFields) || false
   hints.engagement = options?.modifiers?.AT
+  hints.direction = Number(options?.modifiers?.Q)
   hints.strokeWidth = options.strokeWidth || 4
   hints.strokeColor = options.strokeColor || 'black'
   hints.outlineWidth = options.outlineWidth || 0
@@ -43,16 +45,18 @@ export const instructions = (options, meta) => {
 
   if (context.echelon) echelon.push(Echelon.echelon(context))
   if (context.echelon && context.outline) echelon.push(Echelon.outline(context))
+
+  if (context.direction !== undefined) modifiers.push(Direction.direction(context))
   if (context.mobility) modifiers.push(Mobility.mobility(context))
   if (context.taskForce) modifiers.push(Modifiers.taskForce(context))
   if (context.feintDummy) modifiers.push(Modifiers.feintDummy(context))
   if (context.headquarters) modifiers.push(Modifiers.headquartersStaff(context))
   if (context.infoFields) modifiers.push(fields(context))
+  if (context.condition) modifiers.push(Condition.condition(context))
+
   if (context.frame && context.dimension !== 'CONTROL') symbol.push(Frame.frame(context))
   if (context.frame && (!context.present || context.pending)) symbol.push(Frame.overlay(context))
   if (context.frame && context.outline) symbol.push(Frame.outline(context))
-  if (context.condition) symbol.push(Condition.condition(context))
-
   symbol.push(icon(context))
   if (context.installation) symbol.push(Installation.installation(context))
   if (echelon.length) symbol.push(Layout.overlay(...echelon))

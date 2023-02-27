@@ -41,6 +41,7 @@ const hqOffset = {
   'EQUIPMENT:NEUTRAL': box => box[3],
   'SUBSURFACE:NEUTRAL': box => box[3],
   'SUBSURFACE:FRIEND': box => box[1],
+  'SPACE:FRIEND': box => box[3],
 }
 
 export const headquartersStaff = options => {

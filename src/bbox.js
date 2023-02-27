@@ -28,6 +28,13 @@ export const merge = (a, b) => [
   Math.max(a[3], b[3])
 ]
 
+const normalize = bbox => [
+  Math.min(bbox[0], bbox[2]),
+  Math.min(bbox[1], bbox[3]),
+  Math.max(bbox[0], bbox[2]),
+  Math.max(bbox[1], bbox[3])
+]
+
 export const NULL = [
   Number.POSITIVE_INFINITY,
   Number.POSITIVE_INFINITY,
@@ -42,9 +49,24 @@ export const xywh = bbox => ({
   height: bbox[3] - bbox[1]
 })
 
+const transform = (coeff, box) => normalize([
+  box[0] * coeff[0] + box[1] * coeff[2] + coeff[4],
+  box[0] * coeff[1] + box[1] * coeff[3] + coeff[5],
+  box[2] * coeff[0] + box[3] * coeff[2] + coeff[4],
+  box[2] * coeff[1] + box[3] * coeff[3] + coeff[5]
+])
+
+
 const path = ({ d }) => pathbbox(d)
 const circle = ({ cx, cy, r }) => [cx - r, cy - r, cx + r, cy + r]
-const group = ({ children }) => children.map(of).reduce(merge)
+const group = group => {
+  const box = group.children.map(of).reduce(merge)
+  if (!group.transform) return box
+  const match = group.transform.match(/matrix\((.*)\)/)
+  if (!match) return box
+  const coeff = match[1].split(' ').map(Number)
+  return transform(coeff, box)
+}
 
 const text = ({ x, y, text, ...rest}) => {
   const fontSize = rest['font-size'] || 40

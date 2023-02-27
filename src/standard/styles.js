@@ -130,6 +130,13 @@ export const styles = function (meta, hints) {
     'stroke-width': hints.strokeWidth,
   }
 
+  styles['style:direction'] = {
+    stroke: hints.strokeColor,
+    'stroke-width': hints.strokeWidth,
+    fill: hints.strokeColor,
+    zIndex: 1
+  }
+
   return styles
 }
 
