@@ -13,13 +13,12 @@ import icon from './icons'
 import fields from './fields'
 
 export const instructions = (options, meta) => {
-
   const hints = {}
   hints.frame = options.frame !== false && !meta.frameless
-  hints.modifiers = options.modifiers
+  hints.modifiers = options.modifiers || {}
   hints.infoFields = (options.modifiers && options.infoFields) || false
   hints.engagement = options?.modifiers?.AT
-  hints.direction = Number(options?.modifiers?.Q)
+  hints.direction = Number(options?.modifiers?.Q) || undefined // suppress/replace NaN
   hints.strokeWidth = options.strokeWidth || 4
   hints.strokeColor = options.strokeColor || 'black'
   hints.outlineWidth = options.outlineWidth || 0
@@ -39,33 +38,33 @@ export const instructions = (options, meta) => {
     context['style:outline']['stroke-width'],
   ) / 2
 
-  const echelon = []
-  const modifiers = []
-  const symbol = []
+  // if (context.infoFields) modifiers.push(fields(context))
 
-  if (context.echelon) echelon.push(Echelon.echelon(context))
-  if (context.echelon && context.outline) echelon.push(Echelon.outline(context))
+  const [bbox, children] = Layout.compose(
+    (context.frame && context.dimension !== 'CONTROL') && Frame.frame(context),
+    (context.frame && (!context.present || context.pending)) && Frame.overlay(context),
+    (context.frame && context.outline) && Frame.outline(context),
+    icon(context),
+    Layout.overlay(
+      context.installation && Installation.installation(context),
+      context.condition && Condition.condition(context),
+      context.echelon && Echelon.echelon(context),
+      context.echelon && context.outline & Echelon.outline(context),
+      context.taskForce && Modifiers.taskForce(context),
+      context.feintDummy && Modifiers.feintDummy(context),
+      context.headquarters && Modifiers.headquartersStaff(context),
+      context.direction !== undefined && Direction.direction(context),
+      context.mobility && Mobility.mobility(context),
+      context.infoFields && fields(context)
+    ),
+    Layout.overlay(
+      context.frame && Frame.context(context),
+      context.modifiers.AO && Engagement.engagement(context),
+    ),
+    bbox => [BBox.resize([padding, padding], bbox), []]
+  )
 
-  if (context.direction !== undefined) modifiers.push(Direction.direction(context))
-  if (context.mobility) modifiers.push(Mobility.mobility(context))
-  if (context.taskForce) modifiers.push(Modifiers.taskForce(context))
-  if (context.feintDummy) modifiers.push(Modifiers.feintDummy(context))
-  if (context.headquarters) modifiers.push(Modifiers.headquartersStaff(context))
-  if (context.infoFields) modifiers.push(fields(context))
-  if (context.condition) modifiers.push(Condition.condition(context))
 
-  if (context.frame && context.dimension !== 'CONTROL') symbol.push(Frame.frame(context))
-  if (context.frame && (!context.present || context.pending)) symbol.push(Frame.overlay(context))
-  if (context.frame && context.outline) symbol.push(Frame.outline(context))
-  symbol.push(icon(context))
-  if (context.installation) symbol.push(Installation.installation(context))
-  if (echelon.length) symbol.push(Layout.overlay(...echelon))
-  if (context.modifiers.AO) symbol.push(Engagement.engagement(context))
-  if (context.frame) symbol.push(Frame.context(context))
-  if (modifiers.length) symbol.push(Layout.overlay(...modifiers))
-  symbol.push(bbox => [BBox.resize([padding, padding], bbox), []])
-
-  const [bbox, children] = Layout.compose(symbol)
   const [width, height] = BBox.extent(bbox)
   const viewBox = [bbox[0], bbox[1], width, height]
   const size = { width, height }

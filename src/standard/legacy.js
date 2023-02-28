@@ -92,6 +92,7 @@ const DIMENSION = [
   [/^O.[VOR]/, 'ACTIVITY'], // precedence over SO
   [/^O/, 'UNIT'], // SO => GROUND/UNIT
   [/^S.G.E/, 'EQUIPMENT'],
+  [/^S.S/, 'EQUIPMENT'], // SUBSURFACE -> EQUIPMENT
   [/^.FS/, 'EQUIPMENT'],
   [/^I.G/, 'EQUIPMENT'], // SIGINT
   [/^E.O.(AB|AE|AF|BB|CB|CC|DB|D.B|E.)/, 'EQUIPMENT'], // EMS EQUIPMENT
