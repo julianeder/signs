@@ -20,11 +20,11 @@ export const styles = function (meta, hints) {
     const iconFill = meta.frameless ? value[colorIndex] : OFF_WHITE
     const colorIcon = meta.unfilled ? COLORS.frameColor[key] : 'black'
     styles[`color:icon-fill/${key.toLowerCase()}`] = iconFill
+    styles[`color:fill/${key.toLowerCase()}`] = FRAME_FILL[key][colorIndex]
     styles[`color:icon/${key.toLowerCase()}`] = colorIcon
     styles[`color:icon-white/${key.toLowerCase()}`] = OFF_WHITE
     styles[`color:icon-black/${key.toLowerCase()}`] = 'black'
   })
-
 
   // Numeric APP6 is considered MODERN.
   const legacy = meta.type === 'LEGACY' && meta.standard === 'APP6'
