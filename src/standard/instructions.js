@@ -21,6 +21,7 @@ export const instructions = (options, meta) => {
   hints.direction = Number(options?.modifiers?.Q) || undefined // suppress/replace NaN
   hints.strokeWidth = options.strokeWidth || 4
   hints.strokeColor = options.strokeColor || 'black'
+  hints.monoColor = options.monoColor || false
   hints.outlineWidth = options.outlineWidth || 0
   hints.outlineColor = options.outlineColor || false
   hints.outline = (options.outline === false || options.outlineWidth === 0 || !options.outlineColor)
@@ -38,31 +39,33 @@ export const instructions = (options, meta) => {
     context['style:outline']['stroke-width'],
   ) / 2
 
-  // if (context.infoFields) modifiers.push(fields(context))
-
   const [bbox, children] = Layout.compose(
     (context.frame && context.dimension !== 'CONTROL') && Frame.frame(context),
     (context.frame && (!context.present || context.pending)) && Frame.overlay(context),
     (context.frame && context.outline) && Frame.outline(context),
     icon(context),
     Layout.overlay(
-      context.installation && Installation.installation(context),
-      context.condition && Condition.condition(context),
-      context.echelon && Echelon.echelon(context),
-      context.echelon && context.outline & Echelon.outline(context),
-      context.taskForce && Modifiers.taskForce(context),
-      context.feintDummy && Modifiers.feintDummy(context),
-      context.headquarters && Modifiers.headquartersStaff(context),
-      context.direction !== undefined && Direction.direction(context),
-      context.mobility && Mobility.mobility(context),
-      context.infoFields && fields(context)
-    ),
-    Layout.overlay(
-      context.frame && Frame.context(context),
-      context.modifiers.AO && Engagement.engagement(context),
+      Layout.compose(
+        context.frame && Frame.context(context),
+        context.infoFields && fields(context),
+      ),
+      Layout.compose(
+        Layout.overlay(
+          context.installation && Installation.installation(context),
+          context.condition && Condition.condition(context),
+          context.echelon && Echelon.echelon(context),
+          context.echelon && context.outline & Echelon.outline(context),
+          context.taskForce && Modifiers.taskForce(context),
+          context.feintDummy && Modifiers.feintDummy(context),
+          context.headquarters && Modifiers.headquartersStaff(context),
+          context.direction !== undefined && Direction.direction(context),
+          context.mobility && Mobility.mobility(context),
+        ),
+        context.modifiers.AO && Engagement.engagement(context),
+      )
     ),
     bbox => [BBox.resize([padding, padding], bbox), []]
-  )
+  )(BBox.NULL)
 
 
   const [width, height] = BBox.extent(bbox)

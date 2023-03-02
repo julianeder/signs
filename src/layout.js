@@ -8,11 +8,11 @@ export const overlay = (...parts) => box => {
   return [bbox, instructions]
 }
 
-export const compose = (...fns) =>
+export const compose = (...fns) => box =>
   fns.filter(Boolean).reduce(([box, acc], fn) => R.ifElse(
     Boolean,
     ([bbox, instruction]) => [BBox.merge(box, bbox), acc.concat(instruction)],
     () => [box, acc]
   )(fn(box)),
-  [BBox.NULL, []]
+  [box, []]
 )
