@@ -13,20 +13,18 @@ import icon from './icons'
 import fields from './fields'
 
 export const instructions = (options, meta) => {
-  const hints = {}
-  hints.frame = options.frame !== false && !meta.frameless
-  hints.modifiers = options.modifiers || {}
-  hints.infoFields = (options.modifiers && options.infoFields) || false
-  hints.engagement = options?.modifiers?.AT
-  hints.direction = Number(options?.modifiers?.Q) || undefined // suppress/replace NaN
-  hints.strokeWidth = options.strokeWidth || 4
-  hints.strokeColor = options.strokeColor || 'black'
-  hints.monoColor = options.monoColor || false
-  hints.outlineWidth = options.outlineWidth || 0
-  hints.outlineColor = options.outlineColor || false
-  hints.outline = (options.outline === false || options.outlineWidth === 0 || !options.outlineColor)
-    ? false
-    : true
+  const hints = {
+    frame: options.frame !== false && !meta.frameless,
+    modifiers: options.modifiers || {},
+    infoFields: (options.modifiers && options.infoFields) || false,
+    engagement: options?.modifiers?.AT,
+    direction: Number(options?.modifiers?.Q) || undefined, // suppress/replace NaN
+    strokeWidth: options.strokeWidth || 4,
+    strokeColor: options.strokeColor || 'black',
+    outlineWidth: options.outlineWidth || 0,
+    outlineColor: options.outlineColor || false,
+    outline: options.outline === true && options.outlineWidth > 0 && options.outlineColor
+  }
 
   const context = {
     ...meta,
