@@ -21,6 +21,7 @@ export const instructions = (options, meta) => {
     direction: Number(options?.modifiers?.Q) || undefined, // suppress/replace NaN
     strokeWidth: options.strokeWidth || 4,
     strokeColor: options.strokeColor || 'black',
+    monoColor: options.monoColor,
     outlineWidth: options.outlineWidth || 0,
     outlineColor: options.outlineColor || false,
     outline: options.outline === true && options.outlineWidth > 0 && options.outlineColor
