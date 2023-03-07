@@ -77,33 +77,48 @@ export const styles = function (meta, hints) {
   styles['color:icon/stroke/ff00ff'] = 'rgb(255,0,255)'
   styles['color:icon/stroke/ff0000'] = hints.monoColor || 'rgb(255,0,0)'
 
+  // console.log('meta.frameless', meta.frameless)
   // console.log('meta.unfilled', meta.unfilled)
+  // console.log('hints.monoColor', hints.monoColor)
+
+  const mode =
+    (meta.frameless ? 0x01 : 0x00) +
+    (meta.unfilled ? 0x02 : 0x00) +
+    (hints.monoColor ? 0x04 : 0x00)
 
   Object.entries(FRAME_FILL).forEach(([affiliation, value]) => {
-    // console.log(affiliation, value)
-    styles[`color:fill/${affiliation}`] =
-      styles[`color:frame/fill/${affiliation}`] // SFAPW-----*****
+    styles[`color:fill/${affiliation}`] = hints.monoColor
+      ? 'none' // SUAPW-----*****
+      : styles[`color:frame/fill/${affiliation}`] // SFAPW-----*****
 
-    styles[`color:icon/${affiliation}`] = meta.unfilled
-      ? COLORS.frameColor[affiliation] // SUUPWM----*****
-      : styles['color:default/stroke'] // SUPPS-----*****
+    styles[`color:icon/${affiliation}`] = ({
+      0x00: styles['color:default/stroke'], // SUPPS-----*****
+      0x01: styles['color:default/stroke'], // SUUPNBR---*****
+      0x02: COLORS.frameColor[affiliation], // SUUPWM----*****
+      0x04: styles['color:default/stroke'], // SUPPS-----*****
+      0x05: styles['color:default/stroke'], // SUUPNBR---*****
+      0x06: styles['color:default/stroke'], // SUUPE-----*****
+    })[mode]
 
-    // meta.frameless: false|true
-    styles[`color:icon/fill/${affiliation}`] = meta.frameless
-      ? FRAME_FILL[affiliation][scheme] // SUSPO-----*****
-      : OFF_WHITE // SUPPT-----*****
+    styles[`color:icon/fill/${affiliation}`] = ({
+      0x00: OFF_WHITE, // SUPPT-----*****
+      0x01: FRAME_FILL[affiliation][scheme], // SUSPO-----*****
+      0x04: 'none', // SUAPC-----*****
+      0x05: hints.monoColor // SUSPO-----*****
+    })[mode]
 
     styles[`color:icon/white/${affiliation}`] =
       OFF_WHITE // SUSPNH----*****
 
-    styles[`color:icon/black/${affiliation}`] =
-      'black' // SUUPWMGX--*****
-
+    styles[`color:icon/black/${affiliation}`] = hints.monoColor
+      ? hints.monoColor // SUAPC-----*****
+      : 'black' // SUUPWMGX--*****
   })
 
   styles['color:frame/fill'] = (meta.unfilled || hints.monoColor) ? 'none' : styles[[`color:frame/fill/${key}`]]
   styles['color:frame/stroke'] = meta.unfilled ? (hints.monoColor || COLORS.frameColor[key]) : styles['color:default/stroke']
   styles['color:engagement/fill'] = COLORS.ENGAGEMENT[hints.engagement] || styles[[`color:frame/fill/${key}`]]
+
 
   // Numeric APP6 is considered MODERN.
   const legacy = meta.type === 'LEGACY' && meta.standard === 'APP6'
