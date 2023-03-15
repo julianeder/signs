@@ -10,12 +10,14 @@ const boxes = Object.entries(regular).reduce((acc, [key, icon]) => {
 
 
 const resolve = options => instruction => {
-  const { stroke, fill, ...rest } = instruction
-  return {
-    stroke: options[stroke] || stroke,
-    fill: options[fill] || fill,
-    ...rest
-  }
+  const { stroke, fill, children, ...rest } = instruction
+  return children
+    ? { ...rest, children: children.map(resolve(options)) }
+    : {
+      stroke: options[stroke] || stroke,
+      fill: options[fill] || fill,
+      ...rest
+    } 
 }
 
 const icon = (hashcode, options) => {

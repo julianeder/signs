@@ -102,7 +102,7 @@ export const styles = function (meta, hints) {
     ['fill:path/icon-fill',    0x00, OFF_WHITE],                         // SUPPT-----*****
     ['fill:path/icon-fill',    0x01, styles[`color:frame/fill/${key}`]], // SUUPND----*****
     ['fill:path/icon-fill',    0x04, 'none'],                            // SUUPND----*****
-    ['fill:path/unknown',      0x00, COLORS.frameColor.unknown],         // EFIPDA----*****
+    ['fill:path/unknown',      0x00, FRAME_FILL['unknown'][scheme]],     // EFIPDA----*****
     ['fill:path/unknown',      0x06, 'none'],                            // EFIPDA----*****
     ['fill:text/icon',         0x00, 'black'],                           // SUPPL-----*****
     ['fill:text/icon',         0x01, 'black'],                           // GUTPD-----*****

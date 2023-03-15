@@ -50,7 +50,7 @@ const meta = options => {
   meta.pending = PENDING.has(parts.identity)
   meta.installation = meta.dimension === 'UNIT' && parts.modifiers === 'H-'
   meta.taskForce = TASK_FORCE.has(parts.modifier10)
-  meta.headquarters = HEADQUARTERS.has(parts.modifier10)
+  meta.headquarters = HEADQUARTERS.has(parts.modifier10) || parts.function === 'UH----'
   meta.feintDummy = FEINT_DUMMY.has(parts.modifier10)
 
   // Mobility and echelon are mutually exclusive; try mobility first.
