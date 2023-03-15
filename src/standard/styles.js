@@ -65,45 +65,91 @@ export const styles = function (meta, hints) {
   styles['color:condition/fill'] = COLORS.condition[meta.condition] || 'none'
   styles['color:direction/stroke'] = styles['color:default/stroke']
   styles['color:direction/fill'] = styles['color:default/stroke']
-
-  styles['color:icon/fill/008218'] = hints.monoColor ? 'none' : 'rgb(0,130,24)'
-  styles['color:icon/fill/008000'] = 'rgb(0,128,0)'
-  styles['color:icon/fill/ffff00'] = hints.monoColor ? 'none' : 'rgb(255,255,0)'
-  styles['color:icon/fill/fff700'] = 'rgb(255,247,0)'
-  styles['color:icon/fill/ff8d2a'] = 'rgb(255,141,42)'
-  styles['color:icon/fill/c61021'] = 'rgb(198,16,33)'
-  styles['color:icon/fill/ff0000'] = hints.monoColor || 'rgb(255,0,0)'
-  styles['color:icon/fill/ad694b'] = 'rgb(173,105,75)'
-  styles['color:icon/stroke/ff00ff'] = 'rgb(255,0,255)'
-  styles['color:icon/stroke/ff0000'] = hints.monoColor || 'rgb(255,0,0)'
-
-  // console.log('meta.unfilled', meta.unfilled)
-
-  Object.entries(FRAME_FILL).forEach(([affiliation, value]) => {
-    // console.log(affiliation, value)
-    styles[`color:fill/${affiliation}`] =
-      styles[`color:frame/fill/${affiliation}`] // SFAPW-----*****
-
-    styles[`color:icon/${affiliation}`] = meta.unfilled
-      ? COLORS.frameColor[affiliation] // SUUPWM----*****
-      : styles['color:default/stroke'] // SUPPS-----*****
-
-    // meta.frameless: false|true
-    styles[`color:icon/fill/${affiliation}`] = meta.frameless
-      ? FRAME_FILL[affiliation][scheme] // SUSPO-----*****
-      : OFF_WHITE // SUPPT-----*****
-
-    styles[`color:icon/white/${affiliation}`] =
-      OFF_WHITE // SUSPNH----*****
-
-    styles[`color:icon/black/${affiliation}`] =
-      'black' // SUUPWMGX--*****
-
-  })
-
   styles['color:frame/fill'] = (meta.unfilled || hints.monoColor) ? 'none' : styles[[`color:frame/fill/${key}`]]
   styles['color:frame/stroke'] = meta.unfilled ? (hints.monoColor || COLORS.frameColor[key]) : styles['color:default/stroke']
   styles['color:engagement/fill'] = COLORS.ENGAGEMENT[hints.engagement] || styles[[`color:frame/fill/${key}`]]
+
+  styles['color:008218'] = hints.monoColor ? 'none' : 'rgb(0,130,24)'
+  styles['color:008000'] = 'rgb(0,128,0)'
+  styles['color:ffff00'] = hints.monoColor ? 'none' : 'rgb(255,255,0)'
+  styles['color:fff700'] = 'rgb(255,247,0)'
+  styles['color:ff8d2a'] = 'rgb(255,141,42)'
+  styles['color:c61021'] = 'rgb(198,16,33)'
+  styles['color:ff0000'] = hints.monoColor || 'rgb(255,0,0)'
+  styles['color:ad694b'] = 'rgb(173,105,75)'
+  styles['color:ff00ff'] = 'rgb(255,0,255)'
+  styles['color:white'] = OFF_WHITE
+
+  const mode = 
+    (meta.frameless ? 0x01 : 0x00) +
+    (meta.unfilled ? 0x02 : 0x00) +
+    (hints.monoColor ? 0x04 : 0x00)
+
+  // console.log(meta)
+  console.log(mode)
+
+  styles['fill:path/icon'] = {
+    0x00: 'black', // SUPPS-----*****
+    0x01: 'black', // GUOPED----*****
+    0x04: hints.monoColor, // SUPPS-----*****
+    0x05: hints.monoColor // GUOPED----*****
+  }[mode]
+
+  styles['fill:path/icon-fill'] = {
+    0x00: OFF_WHITE, // SUPPT-----*****
+    0x01: styles[`color:frame/fill/${key}`], // SUUPND----*****
+    0x04: 'none' // SUPPT-----*****
+  }[mode]
+
+  styles['fill:text/icon'] = {
+    0x00: 'black', // SUPPL-----*****
+    0x04: hints.monoColor // SUPPL-----*****
+  }[mode]
+  
+  styles['fill:text/icon-fill'] = {
+    0x00: OFF_WHITE, // SUAPC-----*****
+    0x04: 'none' // SUAPC-----*****
+  }[mode]
+
+  styles['fill:text/white'] = {
+    0x00: OFF_WHITE, // SUSPNH----*****
+    0x04: OFF_WHITE // SUSPNH----*****
+  }[mode]
+
+  styles['fill:text/black'] = {
+    0x02: 'black', // SHUPWMGX--*****
+    0x06: hints.monoColor // SHUPWMGX--*****
+  }[mode]
+
+  styles['stroke:path/icon-fill'] = {
+    0x01: styles[`color:frame/fill/${key}`] // SUSPO-----*****
+  }[mode]
+
+  styles['fill:icon/hostile'] = {
+    0x02: COLORS.frameColor.hostile,
+    0x06: 'none'
+  }[mode]
+
+  styles['stroke:icon/neutral'] = {
+    0x02: COLORS.frameColor.neutral, // SUUPE-----*****
+    0x06: hints.monoColor // SUUPE-----*****
+  }[mode]
+
+  styles['stroke:icon/hostile'] = {
+    0x02: COLORS.frameColor.hostile, // SUUPX-----*****
+    0x06: hints.monoColor // SUUPX-----*****
+  }[mode]
+
+  styles['fill:icon/neutral'] = {
+    0x02: COLORS.frameColor.neutral, // SUUPE-----*****
+    0x06: hints.monoColor // SUUPE-----*****
+  }[mode]
+
+  styles['fill:icon/hostile'] = {
+    0x02: COLORS.frameColor.hostile, // SUUPX-----*****
+    0x06: hints.monoColor // SUUPX-----*****
+  }[mode]
+
 
   // Numeric APP6 is considered MODERN.
   const legacy = meta.type === 'LEGACY' && meta.standard === 'APP6'

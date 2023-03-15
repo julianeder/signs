@@ -37,6 +37,7 @@ export default options => {
 
   const key = `${options.generic}+${options.standard}+${options.affiliation}`
   const hashcode = index[key]
+  console.log(key, hashcode)
 
   return box => {
     return [boxes[hashcode] || box, icon(hashcode, options)]
