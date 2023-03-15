@@ -80,76 +80,54 @@ export const styles = function (meta, hints) {
   styles['color:ff00ff'] = 'rgb(255,0,255)'
   styles['color:white'] = OFF_WHITE
 
-  const mode = 
+  const mode =
     (meta.frameless ? 0x01 : 0x00) +
     (meta.unfilled ? 0x02 : 0x00) +
     (hints.monoColor ? 0x04 : 0x00)
 
   // console.log(meta)
-  console.log(mode)
+  // console.log(mode)
 
-  styles['fill:path/icon'] = {
-    0x00: 'black', // SUPPS-----*****
-    0x01: 'black', // GUOPED----*****
-    0x04: hints.monoColor, // SUPPS-----*****
-    0x05: hints.monoColor // GUOPED----*****
-  }[mode]
+  const colors = [
+    ['fill:path/fill/unknown', 0x00, FRAME_FILL['unknown'][scheme]],     // SFAPW-----*****
+    ['fill:path/fill/unknown', 0x04, 'none'],                            // SFAPW-----*****
+    ['fill:path/hostile',      0x02, COLORS.frameColor.hostile],         // SUUPX-----*****
+    ['fill:path/hostile',      0x06, 'none'],                            // SUUPX-----*****
+    ['fill:path/neutral',      0x02, COLORS.frameColor.neutral],         // SUUPWMD---*****
+    ['fill:path/neutral',      0x06, 'none'],                            // SUUPWMD---*****
+    ['fill:path/icon',         0x00, 'black'],                           // SUPPS-----*****
+    ['fill:path/icon',         0x01, 'black'],                           // GUOPED----*****
+    ['fill:path/icon',         0x04, hints.monoColor],                   // SUPPS-----*****
+    ['fill:path/icon',         0x05, hints.monoColor],                   // GUOPED----*****
+    ['fill:path/icon-fill',    0x00, OFF_WHITE],                         // SUPPT-----*****
+    ['fill:path/icon-fill',    0x01, styles[`color:frame/fill/${key}`]], // SUUPND----*****
+    ['fill:path/icon-fill',    0x04, 'none'],                            // SUUPND----*****
+    ['fill:path/unknown',      0x00, COLORS.frameColor.unknown],         // EFIPDA----*****
+    ['fill:path/unknown',      0x06, 'none'],                            // EFIPDA----*****
+    ['fill:text/icon',         0x00, 'black'],                           // SUPPL-----*****
+    ['fill:text/icon',         0x01, 'black'],                           // GUTPD-----*****
+    ['fill:text/icon',         0x04, hints.monoColor],                   // SUPPL-----*****
+    ['fill:text/icon',         0x05, hints.monoColor],                   // GUTPD-----*****
+    ['fill:text/icon-fill',    0x00, OFF_WHITE],                         // SUAPC-----*****
+    ['fill:text/icon-fill',    0x04, 'none'],                            // SUAPC-----*****
+    ['fill:text/black',        0x02, 'black'],                           // SHUPWMGX--*****
+    ['fill:text/black',        0x06, hints.monoColor],                   // SHUPWMGX--*****
+    ['fill:text/neutral',      0x02, COLORS.frameColor.neutral],         // SUUPE-----*****
+    ['fill:text/neutral',      0x06, hints.monoColor],                   // SUUPE-----*****
+    ['fill:text/white',        0x00, OFF_WHITE],                         // SUSPNH----*****
+    ['fill:text/white',        0x04, OFF_WHITE],                         // SUSPNH----*****
+    ['fill:text/hostile',      0x02, COLORS.frameColor.hostile],         // SUUPX-----*****
+    ['fill:text/hostile',      0x06, hints.monoColor],                   // SUUPX-----*****
+    ['stroke:path/icon-fill',  0x01, styles[`color:frame/fill/${key}`]], // SUSPO-----*****
+    ['stroke:path/hostile',    0x02, COLORS.frameColor.hostile],         // SUUPX-----*****
+    ['stroke:path/hostile',    0x06, hints.monoColor],                   // SUUPX-----*****
+    ['stroke:path/neutral',    0x02, COLORS.frameColor.neutral],         // SUUPE-----*****
+    ['stroke:path/neutral',    0x06, hints.monoColor],                   // SUUPE-----*****
+  ]
 
-  styles['fill:path/icon-fill'] = {
-    0x00: OFF_WHITE, // SUPPT-----*****
-    0x01: styles[`color:frame/fill/${key}`], // SUUPND----*****
-    0x04: 'none' // SUPPT-----*****
-  }[mode]
-
-  styles['fill:text/icon'] = {
-    0x00: 'black', // SUPPL-----*****
-    0x04: hints.monoColor // SUPPL-----*****
-  }[mode]
-  
-  styles['fill:text/icon-fill'] = {
-    0x00: OFF_WHITE, // SUAPC-----*****
-    0x04: 'none' // SUAPC-----*****
-  }[mode]
-
-  styles['fill:text/white'] = {
-    0x00: OFF_WHITE, // SUSPNH----*****
-    0x04: OFF_WHITE // SUSPNH----*****
-  }[mode]
-
-  styles['fill:text/black'] = {
-    0x02: 'black', // SHUPWMGX--*****
-    0x06: hints.monoColor // SHUPWMGX--*****
-  }[mode]
-
-  styles['stroke:path/icon-fill'] = {
-    0x01: styles[`color:frame/fill/${key}`] // SUSPO-----*****
-  }[mode]
-
-  styles['fill:icon/hostile'] = {
-    0x02: COLORS.frameColor.hostile,
-    0x06: 'none'
-  }[mode]
-
-  styles['stroke:icon/neutral'] = {
-    0x02: COLORS.frameColor.neutral, // SUUPE-----*****
-    0x06: hints.monoColor // SUUPE-----*****
-  }[mode]
-
-  styles['stroke:icon/hostile'] = {
-    0x02: COLORS.frameColor.hostile, // SUUPX-----*****
-    0x06: hints.monoColor // SUUPX-----*****
-  }[mode]
-
-  styles['fill:icon/neutral'] = {
-    0x02: COLORS.frameColor.neutral, // SUUPE-----*****
-    0x06: hints.monoColor // SUUPE-----*****
-  }[mode]
-
-  styles['fill:icon/hostile'] = {
-    0x02: COLORS.frameColor.hostile, // SUUPX-----*****
-    0x06: hints.monoColor // SUUPX-----*****
-  }[mode]
-
+  colors.forEach(([key, index, color]) => {
+    if (index === mode) styles[key] = color
+  })
 
   // Numeric APP6 is considered MODERN.
   const legacy = meta.type === 'LEGACY' && meta.standard === 'APP6'
