@@ -11,14 +11,14 @@ const fromTemplate = (template, options) => box => {
     left: extent => {
       const right = box[0] - gap
       const left = right - extent[0]
-      const top = box[1] + (height - extent[1]) / 2
+      const top = box[1] + (height - extent[1]) / 2 + gap
       const bottom = top + extent[1]
       return [left, top, right, bottom]
     },
     right: extent => {
       const right = box[2] + gap
       const left = right + extent[0]
-      const top = box[1] + (height - extent[1]) / 2
+      const top = box[1] + (height - extent[1]) / 2 + gap
       const bottom = top + extent[1]
       return [right, top, left, bottom]
     }
@@ -73,7 +73,7 @@ const fromFields = (fields, options) => box => {
     instructions.push(instruction)
     const bbox = BBox.of(instruction)
     return [BBox.merge(box, bbox), instructions]
-  },[box, []])
+  }, [box, []])
 }
 
 /* eslint-disable import/no-anonymous-default-export */

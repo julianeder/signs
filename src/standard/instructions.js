@@ -87,12 +87,12 @@ export const instructions = (options, meta) => {
   }
 
   const array = x => x ? Array.isArray(x) ? x : [x] : []
+
+  // TODO: move to milsymbol/genicon.js
   const escape = s => s
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/#/g, "%23")
-
 
   const xml = document => {
     const { type, children, zIndex, ...properties } = document

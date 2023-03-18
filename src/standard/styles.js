@@ -65,82 +65,72 @@ export const styles = function (meta, hints) {
   styles['color:condition/fill'] = COLORS.condition[meta.condition] || 'none'
   styles['color:direction/stroke'] = styles['color:default/stroke']
   styles['color:direction/fill'] = styles['color:default/stroke']
-  styles['color:frame/fill'] = (meta.unfilled || hints.monoColor) ? 'none' : styles[`color:frame/fill/${key}`]
+  styles['color:frame/fill'] = (meta.unfilled || hints.monoColor) ? 'none' : styles[[`color:frame/fill/${key}`]]
   styles['color:frame/stroke'] = meta.unfilled ? (hints.monoColor || COLORS.frameColor[key]) : styles['color:default/stroke']
-  styles['color:engagement/fill'] = COLORS.ENGAGEMENT[hints.engagement] || styles[`color:frame/fill/${key}`]
+  styles['color:engagement/fill'] = COLORS.ENGAGEMENT[hints.engagement] || styles[[`color:frame/fill/${key}`]]
 
-  styles['color:icon/fill/008218'] = hints.monoColor ? 'none' : 'rgb(0,130,24)'
-  styles['color:icon/fill/008000'] = 'rgb(0,128,0)'
-  styles['color:icon/fill/ffff00'] = hints.monoColor ? 'none' : 'rgb(255,255,0)'
-  styles['color:icon/fill/fff700'] = 'rgb(255,247,0)'
-  styles['color:icon/fill/ff8d2a'] = 'rgb(255,141,42)'
-  styles['color:icon/fill/c61021'] = 'rgb(198,16,33)'
-  styles['color:icon/fill/ff0000'] = hints.monoColor || 'rgb(255,0,0)'
-  styles['color:icon/fill/ad694b'] = 'rgb(173,105,75)'
-  styles['color:icon/stroke/ff00ff'] = 'rgb(255,0,255)'
-  styles['color:icon/stroke/fecb2f'] = 'rgb(254,203,47)'
-  styles['color:icon/stroke/ff0000'] = hints.monoColor || 'rgb(255,0,0)'
+  styles['color:008218'] = hints.monoColor ? 'none' : 'rgb(0,130,24)'
+  styles['color:008000'] = 'rgb(0,128,0)'
+  styles['color:ffff00'] = hints.monoColor ? 'none' : 'rgb(255,255,0)'
+  styles['color:fff700'] = 'rgb(255,247,0)'
+  styles['color:ff8d2a'] = 'rgb(255,141,42)'
+  styles['color:c61021'] = 'rgb(198,16,33)'
+  styles['color:ff0000'] = hints.monoColor || 'rgb(255,0,0)'
+  styles['color:ad694b'] = 'rgb(173,105,75)'
+  styles['color:ff00ff'] = 'rgb(255,0,255)'
+  styles['color:white'] = OFF_WHITE
 
   const mode =
     (meta.frameless ? 0x01 : 0x00) +
     (meta.unfilled ? 0x02 : 0x00) +
     (hints.monoColor ? 0x04 : 0x00)
 
-  Object.keys(FRAME_FILL).forEach((affiliation) => {
-    styles[`fill:white/text/${affiliation}`] = OFF_WHITE
-    styles[`fill:black/text/${affiliation}`] = hints.monoColor || 'black'
-    styles[`fill:black/path/${affiliation}`] = hints.monoColor || 'black'
-    styles[`fill:black/text/${affiliation}`] = hints.monoColor || 'black'
-    styles[`stroke:black/path/${affiliation}`] = hints.monoColor || 'black'
+  // console.log(meta)
+  // console.log(mode)
 
-    styles[`fill:default/path/${affiliation}`] = ({
-      0x00: styles['color:default/stroke'], // SUPPS-----*****
-      0x01: styles['color:default/stroke'], // SUUPNBR---*****
-      0x02: COLORS.frameColor[affiliation], // SUUPWM----*****
-      0x04: styles['color:default/stroke'], // SUPPS-----*****
-      0x05: hints.monoColor // SUUPNBR---*****
-    })[mode]
+  const colors = [
+    ['fill:path/fill/unknown', 0x00, FRAME_FILL['unknown'][scheme]],     // SFAPW-----*****
+    ['fill:path/fill/unknown', 0x04, 'none'],                            // SFAPW-----*****
+    ['fill:path/hostile',      0x02, COLORS.frameColor.hostile],         // SUUPX-----*****
+    ['fill:path/hostile',      0x06, 'none'],                            // SUUPX-----*****
+    ['fill:path/neutral',      0x02, COLORS.frameColor.neutral],         // SUUPWMD---*****
+    ['fill:path/neutral',      0x06, 'none'],                            // SUUPWMD---*****
+    ['fill:path/icon',         0x00, 'black'],                           // SUPPS-----*****
+    ['fill:path/icon',         0x01, 'black'],                           // GUOPED----*****
+    ['fill:path/icon',         0x04, hints.monoColor],                   // SUPPS-----*****
+    ['fill:path/icon',         0x05, hints.monoColor],                   // GUOPED----*****
+    ['fill:path/icon-fill',    0x00, OFF_WHITE],                         // SUPPT-----*****
+    ['fill:path/icon-fill',    0x01, styles[`color:frame/fill/${key}`]], // SUUPND----*****
+    ['fill:path/icon-fill',    0x04, 'none'],                            // SUUPND----*****
+    ['fill:path/unknown',      0x00, FRAME_FILL['unknown'][scheme]],     // EFIPDA----*****
+    ['fill:path/unknown',      0x06, 'none'],                            // EFIPDA----*****
+    ['fill:text/icon',         0x00, 'black'],                           // SUPPL-----*****
+    ['fill:text/icon',         0x01, 'black'],                           // GUTPD-----*****
+    ['fill:text/icon',         0x04, hints.monoColor],                   // SUPPL-----*****
+    ['fill:text/icon',         0x05, hints.monoColor],                   // GUTPD-----*****
+    ['fill:text/icon-fill',    0x00, OFF_WHITE],                         // SUAPC-----*****
+    ['fill:text/icon-fill',    0x04, 'none'],                            // SUAPC-----*****
+    ['fill:text/black',        0x02, 'black'],                           // SHUPWMGX--*****
+    ['fill:text/black',        0x06, hints.monoColor],                   // SHUPWMGX--*****
+    ['fill:text/neutral',      0x02, COLORS.frameColor.neutral],         // SUUPE-----*****
+    ['fill:text/neutral',      0x06, hints.monoColor],                   // SUUPE-----*****
+    ['fill:text/white',        0x00, OFF_WHITE],                         // SUSPNH----*****
+    ['fill:text/white',        0x04, OFF_WHITE],                         // SUSPNH----*****
+    ['fill:text/hostile',      0x02, COLORS.frameColor.hostile],         // SUUPX-----*****
+    ['fill:text/hostile',      0x06, hints.monoColor],                   // SUUPX-----*****
+    ['stroke:path/icon-fill',  0x01, styles[`color:frame/fill/${key}`]], // SUSPO-----*****
+    ['stroke:path/hostile',    0x02, COLORS.frameColor.hostile],         // SUUPX-----*****
+    ['stroke:path/hostile',    0x06, hints.monoColor],                   // SUUPX-----*****
+    ['stroke:path/neutral',    0x02, COLORS.frameColor.neutral],         // SUUPE-----*****
+    ['stroke:path/neutral',    0x06, hints.monoColor],                   // SUUPE-----*****
+  ]
 
-    styles[`fill:icon/path/${affiliation}`] = ({
-      0x00: OFF_WHITE, // SUPPT-----*****
-      0x01: FRAME_FILL[affiliation][scheme], // SUSPED----*****
-      // Special cases not covered by usual mechanics:
-      0x05: ['S-S-ED----', 'S-S-EV----', 'S-S-ZM----', 'S-S-ZI----'].includes(meta.generic)
-        ? hints.monoColor
-        : 'none'
-    })[mode]
-
-    styles[`fill:default/text/${affiliation}`] = ({
-      0x00: styles['color:default/stroke'], // SUPPL-----*****
-      0x01: styles['color:default/stroke'], // GUTPGD----*****
-      0x02: COLORS.frameColor[affiliation], // SUUPE-----*****
-      0x04: styles['color:default/stroke'], // SUPPL-----*****
-      0x05: hints.monoColor, // GUTPGD----*****
-      0x06: hints.monoColor // SUUPE-----*****
-    })[mode]
-
-    styles[`fill:path/${affiliation}`] = ({
-      0x00: styles[`color:frame/fill/${affiliation}`] // SFAPW-----*****
-    })[mode]
-
-    styles[`fill:icon/text/${affiliation}`] = ({
-      0x00: OFF_WHITE // SUAPC-----*****
-    })[mode]
-
-    styles[`stroke:icon/path/${affiliation}`] = ({
-      0x01: FRAME_FILL[affiliation][scheme] // SUSPO-----*****
-    })[mode]
-
-    styles[`stroke:default/path/${affiliation}`] = ({
-      0x02: COLORS.frameColor[affiliation], // SUUPE-----*****
-      0x04: 'red',
-
-    })[mode]
-
-    styles[`stroke:default/path/${affiliation}`] = ({
-      0x02: COLORS.frameColor[affiliation], // SUUPE-----*****
-    })[mode]
+  colors.forEach(([key, index, color]) => {
+    if (index === mode) styles[key] = color
   })
+
+  // Numeric APP6 is considered MODERN.
+  const legacy = meta.type === 'LEGACY' && meta.standard === 'APP6'
 
   styles['style:debug'] = {
     stroke: styles['color:debug/stroke'],

@@ -1,4 +1,5 @@
-import regular from './icons-regular.json'
+import regular from './icon-data.json'
+import index from './icon-index.json'
 import special from './icons-special.json'
 import * as BBox from '../bbox'
 
@@ -9,21 +10,25 @@ const boxes = Object.entries(regular).reduce((acc, [key, icon]) => {
 
 
 const resolve = options => instruction => {
-  const { stroke, fill, ...rest } = instruction
-  return {
-    stroke: options[stroke] || stroke,
-    fill: options[fill] || fill,
-    ...rest
-  }
+  const { stroke, fill, children, ...rest } = instruction
+  return children
+    ? { ...rest, children: children.map(resolve(options)) }
+    : {
+      stroke: options[stroke] || stroke,
+      fill: options[fill] || fill,
+      ...rest
+    } 
 }
 
-const icon = (key, options) =>
-  (regular[key] || []).map(instruction => {
+const icon = (hashcode, options) => {
+  const instructions = regular[hashcode] || []
+  return instructions.map(instruction => {
     const { children, ...rest } = instruction
     return children
       ? { children: children.map(resolve(options)), ...rest }
       : { ...resolve(options)(rest) }
   })
+}
 
 export default options => {
 
@@ -32,8 +37,11 @@ export default options => {
     return () => [[0, 0, 200, 200], special[options.generic]]
   }
 
-  const key = `${options.generic}+${options.affiliation}`
+  const key = `${options.generic}+${options.standard}+${options.affiliation}`
+  const hashcode = index[key]
+  // console.log(key, hashcode)
+
   return box => {
-    return [boxes[key] || box, icon(key, options)]
+    return [boxes[hashcode] || box, icon(hashcode, options)]
   }
 }
