@@ -48,7 +48,8 @@ export const headquartersStaff = options => {
   return box => {
     const offset = hqOffset[`${options.dimension}:${options.affiliation}`] || (() => 100)
     const y = offset(box)
-    const path = { type: "path", d: `M${box[0]},${y} L${box[0]},${box[3] + 100}` }
+    const { hqStaffLength } = options
+    const path = { type: "path", d: `M${box[0]},${y} L${box[0]},${box[3] + hqStaffLength}` }
     const instructions = [path]
     if (options.outline) instructions.push({ ...path, ...options['style:outline'] })
     return [BBox.of(path), instructions]

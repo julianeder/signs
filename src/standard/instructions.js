@@ -24,7 +24,9 @@ export const instructions = (options, meta) => {
     monoColor: options.monoColor,
     outlineWidth: options.outlineWidth || 0,
     outlineColor: options.outlineColor || false,
-    outline: options.outline === true && options.outlineWidth > 0 && options.outlineColor
+    outline: options.outline === true && options.outlineWidth > 0 && options.outlineColor,
+    size: options.size || 100, // %
+    hqStaffLength: options.hqStaffLength || 100 
   }
 
   const context = {
@@ -63,13 +65,24 @@ export const instructions = (options, meta) => {
         context.modifiers.AO && Engagement.engagement(context),
       )
     ),
+
+    // Last but not least, add padding:
     bbox => [BBox.resize([padding, padding], bbox), []]
   )(BBox.NULL)
 
-
-  const [width, height] = BBox.extent(bbox)
-  const viewBox = [bbox[0], bbox[1], width, height]
+  const scale = x => x * hints.size / 100
+  const extent = BBox.extent(bbox)
+  const [width, height] = extent.map(scale)
   const size = { width, height }
+
+  const center = meta.headquarters
+    ? { x: bbox[0] + padding, y: bbox[3] - padding }
+    : { x: 100, y: 100 }
+  
+  const anchor = { 
+    x: (center.x - bbox[0]) * hints.size / 100, 
+    y: (center.y - bbox[1]) * hints.size / 100
+  }
 
   // Poor man's (SVG) layers:
   children.sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0))
@@ -81,7 +94,7 @@ export const instructions = (options, meta) => {
     baseProfile: 'tiny',
     width,
     height,
-    viewBox,
+    viewBox: [bbox[0], bbox[1], ...extent],
     children,
     ...context['style:default']
   }
@@ -112,5 +125,12 @@ export const instructions = (options, meta) => {
     return `<${type} ${propertyList}>${childList}</${type}>`
   }
 
-  return [size, xml(document)]
+  const svg = xml(document)
+
+  return {
+    getSize: () => size,
+    getAnchor: () => anchor,
+    asSVG: () => svg, 
+    toDataURL: () => 'data:image/svg+xml;utf8,' + encodeURIComponent(svg)
+  }
 }

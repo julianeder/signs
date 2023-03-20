@@ -13,6 +13,7 @@ export const instructions = (options, meta) => {
   hints.strokeColor = options.strokeColor || 'black'
   hints.outlineWidth = options.outlineWidth || 0
   hints.outlineColor = options.outlineColor || false
+  hints.size = options.size || 100
   hints.outline = (options.outline === false || options.outlineWidth === 0 || !options.outlineColor)
     ? false
     : true
@@ -28,16 +29,23 @@ export const instructions = (options, meta) => {
     context['style:outline']['stroke-width'],
   ) / 2
 
-  const [bbox, children] = Layout.compose([
+  const [bbox, children] = Layout.compose(
     icon(context),
     fields(context),
     // Adjust bbox according stroke/outline width:
     bbox => [BBox.resize([padding, padding], bbox), []]
-  ])
+  )(BBox.NULL)
 
-  const [width, height] = BBox.extent(bbox)
-  const viewBox = [bbox[0], bbox[1], width, height]
+  const scale = x => x * hints.size / 100
+  const extent = BBox.extent(bbox)
+  const [width, height] = extent.map(scale)
   const size = { width, height }
+  const center = { x: 100, y: 100 }
+  
+  const anchor = { 
+    x: (center.x - bbox[0]) * hints.size / 100, 
+    y: (center.y - bbox[1]) * hints.size / 100
+  }
 
   // Poor man's (SVG) layers:
   children.sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0))
@@ -49,7 +57,7 @@ export const instructions = (options, meta) => {
     baseProfile: 'tiny',
     width,
     height,
-    viewBox,
+    viewBox: [bbox[0], bbox[1], ...extent],
     children,
     ...context['style:default']
   }
@@ -59,7 +67,6 @@ export const instructions = (options, meta) => {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/#/g, "%23")
 
 
   const xml = document => {
@@ -80,5 +87,12 @@ export const instructions = (options, meta) => {
     return `<${type} ${propertyList}>${childList}</${type}>`
   }
 
-  return [size, xml(document)]
+  const svg = xml(document)
+
+  return {
+    getSize: () => size,
+    getAnchor: () => anchor,
+    asSVG: () => svg, 
+    toDataURL: () => 'data:image/svg+xml;utf8,' + encodeURIComponent(svg)
+  }
 }

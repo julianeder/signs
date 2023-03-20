@@ -32,11 +32,5 @@ export const Symbol = function (sidc, options) {
 Symbol.of = options => {
   const factory = factories.find(factory => factory.accept(options))
   if (!factory) return
-
-  const [size, svg] = factory.document(options)
-  return {
-    size: () => size,
-    asSVG: () => svg,
-    toDataURL: () => 'data:image/svg+xml;utf8,' + encodeURIComponent(svg)
-  }
+  return factory.document(options)
 }

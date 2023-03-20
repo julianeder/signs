@@ -6,8 +6,6 @@ const accept = options => {
   const regex = /[A-Z\-]{10,15}/
   const match = normalized.match(regex)
   return match ? true : false
-
-  // const generic = normalized[0] + '-' + normalized[2] + '-' + normalized.substring(4, 10)
 }
 
 const document = options => {
