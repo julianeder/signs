@@ -14,6 +14,7 @@ import fields from './fields'
 
 export const instructions = (options, meta) => {
   const hints = {
+    colorMode: options.colorMode || 'light',
     frame: options.frame !== false && !meta.frameless,
     modifiers: options.modifiers || {},
     infoFields: (options.modifiers && options.infoFields) || false,
