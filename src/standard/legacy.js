@@ -32,7 +32,7 @@ const meta = options => {
     modifiers: meta.sidc.substring(10, 12)
   }
 
-  meta.affiliation = AFFILIATION[parts.identity]
+  meta.affiliation = AFFILIATION[parts.identity] || 'UNKNOWN'
   meta.joker = parts.identity === 'J'
   meta.faker = parts.identity === 'K'
   meta.context = EXERCISE.has(parts.identity) ? 'EXERCISE' : 'REALITY'
