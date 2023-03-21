@@ -56,6 +56,7 @@ export const instructions = (options, meta) => {
     context['style:outline']['stroke-width'],
   ) / 2
 
+  let intermediateBBox
   const [bbox, children] = Layout.compose(
     (context.frame && context.dimension !== 'CONTROL') && Frame.frame(context),
     (context.frame && (!context.present || context.pending)) && Frame.overlay(context),
@@ -77,6 +78,13 @@ export const instructions = (options, meta) => {
           context.headquarters && Modifiers.headquartersStaff(context),
           context.direction !== undefined && Direction.direction(context),
           context.mobility && Mobility.mobility(context),
+
+          // Tap into intermediate bounding box to get anchor right.
+          // For HQs, info fields would shift anchor horizontally, otherwise.
+          box => {
+            intermediateBBox = box
+            return [box, []]
+          }
         ),
         context.modifiers.AO && Engagement.engagement(context),
       )
@@ -92,7 +100,7 @@ export const instructions = (options, meta) => {
   const size = { width, height }
 
   const center = meta.headquarters
-    ? { x: bbox[0] + padding, y: bbox[3] - padding }
+    ? { x: intermediateBBox[0] + padding, y: bbox[3] - padding }
     : { x: 100, y: 100 }
   
   const anchor = { 
