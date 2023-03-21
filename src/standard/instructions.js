@@ -25,7 +25,13 @@ export const instructions = (options, meta) => {
     monoColor: options.monoColor,
     outlineWidth: options.outlineWidth || 0,
     outlineColor: options.outlineColor || false,
-    outline: options.outline === true && options.outlineWidth > 0 && options.outlineColor,
+
+    // Implicitly true if not explicitly false:
+    outline: 
+      options.outline === false
+        ? false
+        : options.outlineWidth > 0 &&  options.outlineColor
+        ,
     size: options.size || 100, // %
     hqStaffLength: options.hqStaffLength || 100 
   }
