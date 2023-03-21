@@ -17,7 +17,7 @@ export const instructions = (options, meta) => {
   const hints = {
     colorMode: options.colorMode || 'light',
 
-    fillOpacity: 
+    fillOpacity:
       options.fillOpacity === 0
         ? 0
         : options.fillOpacity || 1
@@ -35,14 +35,14 @@ export const instructions = (options, meta) => {
     outlineColor: options.outlineColor || false,
 
     // Implicitly true if not explicitly false:
-    outline: 
+    outline:
       options.outline === false
         ? false
         : options.outlineWidth > 0 &&  options.outlineColor
         ,
-        
+
     size: options.size || 100, // %
-    hqStaffLength: options.hqStaffLength || 100 
+    hqStaffLength: options.hqStaffLength || 100
   }
 
   const context = {
@@ -56,7 +56,9 @@ export const instructions = (options, meta) => {
     context['style:outline']['stroke-width'],
   ) / 2
 
-  let intermediateBBox
+  // Center is available after HQ staff was processed:
+  let center
+
   const [bbox, children] = Layout.compose(
     (context.frame && context.dimension !== 'CONTROL') && Frame.frame(context),
     (context.frame && (!context.present || context.pending)) && Frame.overlay(context),
@@ -75,16 +77,22 @@ export const instructions = (options, meta) => {
           context.echelon && context.outline & Echelon.outline(context),
           context.taskForce && Modifiers.taskForce(context),
           context.feintDummy && Modifiers.feintDummy(context),
-          context.headquarters && Modifiers.headquartersStaff(context),
-          context.direction !== undefined && Direction.direction(context),
-          context.mobility && Mobility.mobility(context),
 
           // Tap into intermediate bounding box to get anchor right.
           // For HQs, info fields would shift anchor horizontally, otherwise.
-          box => {
-            intermediateBBox = box
-            return [box, []]
-          }
+          context.headquarters
+            ? box => {
+              const [bbox, instructions] = Modifiers.headquartersStaff(context)(box)
+              center = { x: bbox[0], y: bbox[3] }
+              return [bbox, instructions]
+            }
+            : () => {
+              center = { x: 100, y: 100 }
+              return [BBox.NULL, []]
+            }
+            ,
+          context.direction !== undefined && Direction.direction(context),
+          context.mobility && Mobility.mobility(context),
         ),
         context.modifiers.AO && Engagement.engagement(context),
       )
@@ -99,12 +107,8 @@ export const instructions = (options, meta) => {
   const [width, height] = extent.map(scale)
   const size = { width, height }
 
-  const center = meta.headquarters
-    ? { x: intermediateBBox[0] + padding, y: bbox[3] - padding }
-    : { x: 100, y: 100 }
-  
-  const anchor = { 
-    x: (center.x - bbox[0]) * hints.size / 100, 
+  const anchor = {
+    x: (center.x - bbox[0]) * hints.size / 100,
     y: (center.y - bbox[1]) * hints.size / 100
   }
 
@@ -154,7 +158,7 @@ export const instructions = (options, meta) => {
   return {
     getSize: () => size,
     getAnchor: () => anchor,
-    asSVG: () => svg, 
+    asSVG: () => svg,
     toDataURL: () => 'data:image/svg+xml;utf8,' + encodeURIComponent(svg)
   }
 }
