@@ -13,8 +13,16 @@ import icon from './icons'
 import fields from './fields'
 
 export const instructions = (options, meta) => {
+
   const hints = {
     colorMode: options.colorMode || 'light',
+
+    fillOpacity: 
+      options.fillOpacity === 0
+        ? 0
+        : options.fillOpacity || 1
+        ,
+
     frame: options.frame !== false && !meta.frameless,
     modifiers: options.modifiers || {},
     infoFields: (options.modifiers && options.infoFields) || false,
@@ -32,6 +40,7 @@ export const instructions = (options, meta) => {
         ? false
         : options.outlineWidth > 0 &&  options.outlineColor
         ,
+        
     size: options.size || 100, // %
     hqStaffLength: options.hqStaffLength || 100 
   }

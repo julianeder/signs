@@ -129,9 +129,6 @@ export const styles = function (meta, hints) {
     if (index === mode) styles[key] = color
   })
 
-  // Numeric APP6 is considered MODERN.
-  const legacy = meta.type === 'LEGACY' && meta.standard === 'APP6'
-
   styles['style:debug'] = {
     stroke: styles['color:debug/stroke'],
     'stroke-width': 2,
@@ -173,6 +170,7 @@ export const styles = function (meta, hints) {
 
   styles['style:frame/shape'] = {
     fill: styles['color:frame/fill'],
+    'fill-opacity': hints.fillOpacity,
     stroke: styles['color:frame/stroke'],
     'stroke-width': hints.strokeWidth
   }
