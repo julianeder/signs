@@ -158,7 +158,31 @@ export const styles = function (meta, hints) {
     fill: 'black'
   }
 
-  styles['style:text-amplifiers/bottom'] = {}
+  styles['style:text-amplifiers/top'] = {
+    'font-family': 'Arial',
+    'font-size': 36,
+    'text-anchor': 'middle',
+    'stroke-width': 0,
+    fill: 'black'
+  }
+
+  styles['style:text-amplifiers/bottom'] = {
+    'font-family': 'Arial',
+    'font-size': 36,
+    'text-anchor': 'middle',
+    'stroke-width': 0,
+    'font-weight': 'bold',
+    fill: 'black'
+  }
+
+  styles['style:text-amplifiers/center'] = {
+    'font-family': 'Arial',
+    'font-size': 40,
+    'text-anchor': 'middle',
+    'font-weight': 'bold',
+    'stroke-width': 0,
+    fill: 'black'
+  }
 
   styles['style:outline'] = {
     stroke: hints.outlineColor,
@@ -238,4 +262,3 @@ export const styles = function (meta, hints) {
 
   return styles
 }
-

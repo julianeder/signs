@@ -59,20 +59,23 @@ export const instructions = (options, meta) => {
   // Center is available after HQ staff was processed:
   let center
 
+  // Only include icon if special c2 headquarters (AA) is NOT provided.
+  const dropIcon = hints.infoFields && hints.modifiers.AA
+
   const [bbox, children] = Layout.compose(
     (context.frame && context.dimension !== 'CONTROL') && Frame.frame(context),
     (context.frame && (!context.present || context.pending)) && Frame.overlay(context),
     (context.frame && context.outline) && Frame.outline(context),
-    icon(context),
+    !dropIcon && icon(context),
     Layout.overlay(
       Layout.compose(
         context.frame && Frame.context(context),
         context.infoFields && fields(context),
+        context.condition && Condition.condition(context)
       ),
       Layout.compose(
         Layout.overlay(
           context.installation && Installation.installation(context),
-          context.condition && Condition.condition(context),
           context.echelon && Echelon.echelon(context),
           context.echelon && context.outline & Echelon.outline(context),
           context.taskForce && Modifiers.taskForce(context),

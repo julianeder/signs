@@ -5,9 +5,30 @@ import fields from './fields.json'
 
 const fromTemplate = (template, options) => box => {
   const gap = 16
-  const [width, height] = BBox.extent(box)
+  const [, height] = BBox.extent(box)
 
   const boxes = {
+    top: extent => {
+      const left = 100 - extent[0] / 2
+      const right = left + extent[0]
+      const top = box[1] - extent[1]
+      const bottom = top + extent[1]
+      return [left, top, right, bottom]
+    },
+    bottom: extent => {
+      const left = 100 - extent[0] / 2
+      const right = left + extent[0]
+      const top = box[3] + gap / 2
+      const bottom = top + extent[1] - gap / 2
+      return [left, top, right, bottom]
+    },
+    center: extent => {
+      const left = 100 - extent[0] / 2
+      const right = left + extent[0]
+      const top = 100 - extent[1] / 2.5
+      const bottom = top + extent[1]
+      return [left, top, right, bottom]
+    },
     left: extent => {
       const right = box[0] - gap
       const left = right - extent[0]
@@ -48,8 +69,14 @@ const fromTemplate = (template, options) => box => {
       const style = `style:text-amplifiers/${placement}`
       const extent = Text.extent(lines, options[style]['font-size'])
       const box = boxes[placement](extent)
-      const x = placement === 'right' ? 0 : extent[0]
+
       const dy = extent[1] / lines.length
+      const x = placement === 'right'
+        ? 0
+        : ['top', 'bottom', 'center'].includes(placement)
+          ? extent[0] / 2
+          : extent[0]
+
       const text = (line, index) => makeText(x, index * dy, line)
       const children = lines.map(text)
       acc[1].push(makeGroup(box, children, options[style] ))

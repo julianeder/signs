@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 
 export const AMPLIFIERS = {
-  quantity: 'D',
+  quantity: 'C',
   reinforcedReduced: 'F',
   staffComments: 'G',
   additionalInformation: 'H',
@@ -28,8 +28,12 @@ export const AMPLIFIERS = {
   platformType: 'AD',
   equipmentTeardownTime: 'AE',
   commonIdentifier: 'AF',
-  auxiliaryEquipmentIndicator: 'AG',
-  // headquartersElement: 'AH',
+
+  // APP6-D
+  headquartersElement: 'AH',
+
+  // 2525-C/D AH: Area of Uncertainty
+
   installationComposition: 'AI',
 
   // A:BBB-CC
