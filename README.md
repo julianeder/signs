@@ -17,7 +17,6 @@
 * define icon parts statically, preferably in JSON definition files
 * defer styling as long as possible
 * add named styles to icon parts depending on symbol options
-* use expression framework for dynamic texts
 * use SVG compliant attributes throughout the code
 * hoist default style attributes to SVG namespace
 * define icons (composition of icon parts) declaratively (NICE TO HAVE)
@@ -26,10 +25,8 @@
 * remove icon cache
 * move SIDC-dependent metadata to JSON configuration (NICE TO HAVE)
 * abstract styling over letter and number SIDC (alpha/numeric)
-* fail fast (on invalid SIDCs), expose Error class to extensions
-* define and expose interface/pipeline for symbol parts and composition
-* use expression framework for text modifiers/amplifiers
 
 ### CANCELLED
 * IMPRACTICAL - use XML library to generate SVG from JavaScript object
 * OVER-ENGINEERED - use simple layout framework for placement/alignment
+* IMPRACTICAL - use expression framework for dynamic texts
