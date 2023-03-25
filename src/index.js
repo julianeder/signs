@@ -8,13 +8,13 @@ const factories = [
   skkm
 ]
 
-const translateModifers = options => 
+const translateModifers = options =>
   Object.entries(options).reduce((acc, [k, v]) => {
     if (AMPLIFIERS[k]) acc[AMPLIFIERS[k]] = v
     return acc
   }, {})
 
-const removeModifiers = options => 
+const removeModifiers = options =>
   Object.entries(options).reduce((acc, [k, v]) => {
     if (AMPLIFIERS[k]) delete acc[k]
     return acc
@@ -22,8 +22,8 @@ const removeModifiers = options =>
 
 // Legacy constructor.
 export const Symbol = function (sidc, options) {
-  return Symbol.of({ 
-    sidc, 
+  return Symbol.of({
+    sidc,
     modifiers: translateModifers(options),
     ...removeModifiers(options),
   })

@@ -3,7 +3,7 @@ import { instructions } from './instructions'
 const accept = options => {
   const [code] = options.sidc.split('+')
   const normalized = code.toUpperCase().replaceAll('*', '-')
-  const regex = /[A-Z\-]{10,15}/
+  const regex = /^K[A-Z\-]{9,14}$/
   const match = normalized.match(regex)
   return match ? true : false
 }

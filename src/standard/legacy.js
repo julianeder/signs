@@ -3,7 +3,7 @@ import { instructions } from './instructions'
 export const accept = options => {
   const [sidc] = options.sidc.split('+')
   const normalized = sidc.toUpperCase().replaceAll('*', '-')
-  const regex = /[EGIOSW][A-Z0-9\-]{9,14}/
+  const regex = /^[EGIOSW][A-Z0-9\-]{9,14}$/
   const match = normalized.match(regex)
   return match ? true : false
 }
