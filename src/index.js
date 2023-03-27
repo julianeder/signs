@@ -1,11 +1,9 @@
 import { legacy, modern } from './standard'
-import { skkm } from './skkm'
 import { AMPLIFIERS } from './amplifiers'
 
 const factories = [
   legacy,
-  modern,
-  skkm
+  modern
 ]
 
 const translateModifers = options =>

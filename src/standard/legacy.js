@@ -3,7 +3,8 @@ import { instructions } from './instructions'
 export const accept = options => {
   const [sidc] = options.sidc.split('+')
   const normalized = sidc.toUpperCase().replaceAll('*', '-')
-  const regex = /^[EGIOSW][A-Z0-9\-]{9,14}$/
+  // Note: Also accepting SKKM.
+  const regex = /^[EGIOSWK][A-Z0-9\-]{9,14}$/
   const match = normalized.match(regex)
   return match ? true : false
 }
@@ -32,6 +33,7 @@ const meta = options => {
     modifiers: meta.sidc.substring(10, 12)
   }
 
+  meta.skkm = parts.scheme === 'K'
   meta.affiliation = AFFILIATION[parts.identity] || 'UNKNOWN'
   meta.joker = parts.identity === 'J'
   meta.faker = parts.identity === 'K'
@@ -114,6 +116,9 @@ const FRAMELESS = [
   /^W.S.(WSVE--|WSD-LI|WSFGSO|WSGRL-|WSR-LI|WSDSLM|WSS-LI|WSTMH-|WST-FC|WSTSS-)/,
   /^..U.(ND----|NBS---|NBR---|NBW---|NM----|NA----)/,
   /^G.(?!O.[VLPI])/,
+
+  // SKKM icons only, no frames:
+  /^K/
 ]
 
 // With unfilled frames.

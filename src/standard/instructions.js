@@ -25,7 +25,7 @@ export const instructions = (options, meta) => {
 
     frame: options.frame !== false && !meta.frameless,
     modifiers: options.modifiers || {},
-    infoFields: (options.modifiers && options.infoFields) || false,
+    infoFields: options.modifiers && options.infoFields !== false,
     engagement: options?.modifiers?.AT,
     direction: Number(options?.modifiers?.Q) || undefined, // suppress/replace NaN
     strokeWidth: options.strokeWidth || 4,
@@ -60,7 +60,8 @@ export const instructions = (options, meta) => {
   let center
 
   // Only include icon if special c2 headquarters (AA) is NOT provided.
-  const dropIcon = hints.infoFields && hints.modifiers.AA
+  // SKKM is a special case with icons only.
+  const dropIcon = !meta.skkm && hints.infoFields && hints.modifiers.AA
 
   const [bbox, children] = Layout.compose(
     (context.frame && context.dimension !== 'CONTROL') && Frame.frame(context),
