@@ -80,7 +80,7 @@ const fromTemplate = (template, options) => box => {
       const text = (line, index) => makeText(x, index * dy, line)
       const children = lines.map(text)
       acc[1].push(makeGroup(box, children, options[style] ))
-      if (options.outline) acc[1].push(makeGroup(box, children, { ...options[style], ...options['style:outline'] }))
+      if (options.infoOutline) acc[1].push(makeGroup(box, children, { ...options[style], ...options['style:text-amplifiers/outline'] }))
       return [BBox.merge(acc[0], box), acc[1]]
     }, [BBox.NULL, []])
 

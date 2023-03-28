@@ -36,19 +36,20 @@ export const instructions = (options, meta) => {
     infoColor: options.infoColor || false,
     infoOutlineColor: options.infoOutlineColor || options.outlineColor,
     infoOutlineWidth: options.infoOutlineWidth || options.outlineWidth || 0,
-
-    // Implicitly true if not explicitly false:
-    outline:
-      options.outline === false
-        ? false
-        : options.outlineWidth > 0 &&  options.outlineColor
-        ,
-
     size: options.size || 100, // %
     hqStaffLength: options.hqStaffLength || 100
   }
 
-  console.log(hints)
+  // Implicitly true if not explicitly false:
+  hints.outline =
+    options.outline === false
+      ? false
+      : hints.outlineWidth > 0 &&  hints.outlineColor
+
+  hints.infoOutline =
+    options.infoOutline === false
+      ? false
+      : hints.infoOutlineWidth > 0 &&  hints.infoOutlineColor
 
   const context = {
     ...meta,
