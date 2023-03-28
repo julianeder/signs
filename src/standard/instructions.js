@@ -33,6 +33,9 @@ export const instructions = (options, meta) => {
     monoColor: options.monoColor,
     outlineWidth: options.outlineWidth || 0,
     outlineColor: options.outlineColor || false,
+    infoColor: options.infoColor || false,
+    infoOutlineColor: options.infoOutlineColor || options.outlineColor,
+    infoOutlineWidth: options.infoOutlineWidth || options.outlineWidth || 0,
 
     // Implicitly true if not explicitly false:
     outline:
@@ -44,6 +47,8 @@ export const instructions = (options, meta) => {
     size: options.size || 100, // %
     hqStaffLength: options.hqStaffLength || 100
   }
+
+  console.log(hints)
 
   const context = {
     ...meta,

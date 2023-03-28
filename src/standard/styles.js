@@ -142,46 +142,49 @@ export const styles = function (meta, hints) {
     'font-family': 'Arial'
   }
 
-  styles['style:text-amplifiers/left'] = {
+  const amplifiers = {
     'font-family': 'Arial',
+    fill: hints.infoColor || 'black',
+    'stroke-width': 0
+  }
+
+  styles['style:text-amplifiers/left'] = {
+    ...amplifiers,
     'font-size': 36,
     'text-anchor': 'end',
-    'stroke-width': 0,
-    fill: 'black'
   }
 
   styles['style:text-amplifiers/right'] = {
-    'font-family': 'Arial',
+    ...amplifiers,
     'font-size': 36,
     'text-anchor': 'start',
-    'stroke-width': 0,
-    fill: 'black'
   }
 
   styles['style:text-amplifiers/top'] = {
-    'font-family': 'Arial',
     'font-size': 36,
     'text-anchor': 'middle',
-    'stroke-width': 0,
-    fill: 'black'
   }
 
   styles['style:text-amplifiers/bottom'] = {
-    'font-family': 'Arial',
+    ...amplifiers,
     'font-size': 36,
     'text-anchor': 'middle',
-    'stroke-width': 0,
-    'font-weight': 'bold',
-    fill: 'black'
+    'font-weight': 'bold'
   }
 
   styles['style:text-amplifiers/center'] = {
-    'font-family': 'Arial',
+    ...amplifiers,
     'font-size': 40,
     'text-anchor': 'middle',
-    'font-weight': 'bold',
-    'stroke-width': 0,
-    fill: 'black'
+    'font-weight': 'bold'
+  }
+
+  styles['style:text-amplifiers/outline'] = {
+    stroke: hints.infoOutlineColor,
+    'stroke-width': hints.strokeWidth + hints.infoOutlineWidth * 2,
+    'stroke-linejoin': 'round',
+    'stroke-linecap': 'round',
+    zIndex: -1
   }
 
   styles['style:outline'] = {
