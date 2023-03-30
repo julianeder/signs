@@ -2,13 +2,14 @@ import * as BBox from '../bbox'
 import { DEG2RAD, rotate, translate, matrix } from '../transform'
 
 export const direction = options => {
-  return box => {
+  const paths = d => {
+    const paths = [{ type: "path", d, ...options['style:direction'] }]
+    if (options.outline) paths.push({ type: "path", d, ...options['style:outline'] })
+    return paths
+  }
 
-    const children = [{
-      type: "path",
-      d: "M0,0 l0,-75 -5,3 5,-15 5,15 -5,-3",
-      ...options['style:direction']
-    }]
+  return box => {
+    const children = paths('M0,0 l0,-75 -5,3 5,-15 5,15 -5,-3')
 
     const [dx, dy] = options.ground
       ? options.headquarters
@@ -27,17 +28,11 @@ export const direction = options => {
     const instructions = [{
       type: 'g',
       transform,
-      children,
-      ...options['style:direction']
+      children
     }]
 
     if (options.ground && !options.headquarters) {
-      instructions.push({
-        type: "path",
-        d: `M 100,${box[3]}
-        l0,100`,
-        ...options['style:direction']
-      })
+      instructions.push(...paths(`M 100,${box[3]} l0,100`))
     }
 
     return [BBox.of(instructions), instructions]

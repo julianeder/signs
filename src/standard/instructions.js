@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import * as BBox from '../bbox'
 import * as Layout from '../layout'
 import * as Styles from './styles'
@@ -90,7 +91,7 @@ export const instructions = (options, meta) => {
         Layout.overlay(
           context.installation && Installation.installation(context),
           context.echelon && Echelon.echelon(context),
-          context.echelon && context.outline & Echelon.outline(context),
+          (context.echelon && context.outline) && Echelon.outline(context),
           context.taskForce && Modifiers.taskForce(context),
           context.feintDummy && Modifiers.feintDummy(context),
 
@@ -129,7 +130,12 @@ export const instructions = (options, meta) => {
   }
 
   // Poor man's (SVG) layers:
-  children.sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0))
+  // Sort top level instructions according zIndex.
+  // Sort chilren of top level groups.
+  // TODO: sort tree recursively
+  const sorter = (a, b) => (a.zIndex || 0) - (b.zIndex || 0)
+  children.sort(sorter)
+  children.filter(R.propEq('type', 'g')).map(x => x.children.sort(sorter))
 
   const document = {
     type: 'svg',
