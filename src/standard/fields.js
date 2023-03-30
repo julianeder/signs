@@ -1,7 +1,10 @@
 import * as BBox from '../bbox'
 import * as Text from '../text'
+
+// Currently all templates have exactly five slots to the left and/or to the right.
 import templates from './templates.json'
 import fields from './fields.json'
+
 
 const fromTemplate = (template, options) => box => {
   const gap = 16
@@ -68,6 +71,8 @@ const fromTemplate = (template, options) => box => {
 
       const style = `style:text-amplifiers/${placement}`
       const extent = Text.extent(lines, options[style]['font-size'])
+      // TODO: left/right placement: trim empty leading/trailing slots
+      // TODO: left/right placement: vertical align center slot @ 100
       const box = boxes[placement](extent)
 
       const dy = extent[1] / lines.length
