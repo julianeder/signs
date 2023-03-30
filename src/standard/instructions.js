@@ -69,6 +69,12 @@ export const instructions = (options, meta) => {
   // SKKM is a special case with icons only.
   const dropIcon = !meta.skkm && hints.infoFields && hints.modifiers.AA
 
+  const debugRectangle = bbox => [bbox, [{
+    type: 'rect',
+    ...BBox.xywh(bbox),
+    ...context['style:debug']
+  }]]
+
   const [bbox, children] = Layout.compose(
     (context.frame && context.dimension !== 'CONTROL') && Frame.frame(context),
     (context.frame && (!context.present || context.pending)) && Frame.overlay(context),
@@ -114,8 +120,16 @@ export const instructions = (options, meta) => {
 
   const scale = x => x * hints.size / 100
   const extent = BBox.extent(bbox)
+
+  // [30, 60, 170, 155] => [140, 95] => [70, 47.5]
+  // [41, 41, 159, 159] => [118, 118] => [59, 59]
+  console.log('center', center)
+  console.log('bbox', bbox)
+  console.log('extent', extent)
+  console.log('scale', hints.size / 100)
   const [width, height] = extent.map(scale)
   const size = { width, height }
+  console.log('width, height', [width, height])
 
   const anchor = {
     x: (center.x - bbox[0]) * hints.size / 100,
