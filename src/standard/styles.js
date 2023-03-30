@@ -86,6 +86,7 @@ export const styles = function (meta, hints) {
     (hints.monoColor ? 0x04 : 0x00)
 
   // console.log(meta)
+  // console.log(hints)
   // console.log(mode)
 
   const colors = [
@@ -123,6 +124,16 @@ export const styles = function (meta, hints) {
     ['stroke:path/hostile',    0x06, hints.monoColor],                   // SUUPX-----*****
     ['stroke:path/neutral',    0x02, COLORS.frameColor.neutral],         // SUUPE-----*****
     ['stroke:path/neutral',    0x06, hints.monoColor],                   // SUUPE-----*****
+
+    // SKKM colors:
+    ['fill:path/white', 0x01, `rgb(255,255,255,${hints.fillOpacity})`],
+    ['fill:path/white', 0x05, 'none'],
+    ['fill:path/blue', 0x01, `rgb(0,0,255,${hints.fillOpacity})`],
+    ['fill:path/blue', 0x05, 'none'],
+    ['stroke:path/blue', 0x01, 'blue'],
+    ['stroke:path/blue', 0x05, hints.monoColor],
+    ['stroke:path/red', 0x01, 'red'],
+    ['stroke:path/red', 0x05, hints.monoColor]
   ]
 
   colors.forEach(([key, index, color]) => {
