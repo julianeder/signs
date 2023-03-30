@@ -120,9 +120,6 @@ export const instructions = (options, meta) => {
 
   const scale = x => x * hints.size / 100
   const extent = BBox.extent(bbox)
-
-  // [30, 60, 170, 155] => [140, 95] => [70, 47.5]
-  // [41, 41, 159, 159] => [118, 118] => [59, 59]
   const [width, height] = extent.map(scale)
   const size = { width, height }
 
