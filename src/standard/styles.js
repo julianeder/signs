@@ -172,6 +172,7 @@ export const styles = function (meta, hints) {
   }
 
   styles['style:text-amplifiers/top'] = {
+    ...amplifiers,
     'font-size': 36,
     'text-anchor': 'middle',
   }
