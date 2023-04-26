@@ -22,8 +22,10 @@ const frames = Object.entries(FRAME).reduce((acc, [key, frame]) => {
 }, {})
 
 const instruction =
-  (type, style) =>
+  (typeHint, style) =>
     options => {
+      // Outline frame must not be closed for monochrome color:
+      const type = options.monoColor ? 'open' : typeHint
       const key = `${options.dimension}+${options.affiliation}`
       const frame = frames[key]
       const instructions = [{ ...frame[type], ...options[style] }]
