@@ -83,8 +83,10 @@ export const instructions = (options, meta) => {
     Layout.overlay(
       Layout.compose(
         context.frame && Frame.context(context),
-        context.infoFields && fields(context),
-        context.condition && Condition.condition(context)
+        Layout.overlay(
+          context.infoFields && fields(context),
+          context.condition && Condition.condition(context)
+        )
       ),
       Layout.compose(
         Layout.overlay(
