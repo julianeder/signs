@@ -1,7 +1,7 @@
 {
   "id": "8eb57a5f-81b0-4837-817d-187d507c172f",
   "name": "@syncpoint/signs",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Military symbols based on milsymbol.",
   "main": "dist/index.js",
   "scripts": {
