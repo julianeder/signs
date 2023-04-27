@@ -17,7 +17,7 @@
     "symbology"
   ],
   "author": "horst.dehmer@syncpoint.io",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/preset-env": "^7.20.2",
