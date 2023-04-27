@@ -155,31 +155,28 @@ export const styles = function (meta, hints) {
 
   const amplifiers = {
     'font-family': 'Arial',
-    fill: hints.infoColor || 'black',
+    fill: hints.monoColor || hints.infoColor || 'black',
+    'font-size': 36,
     'stroke-width': 0
   }
 
   styles['style:text-amplifiers/left'] = {
     ...amplifiers,
-    'font-size': 36,
     'text-anchor': 'end',
   }
 
   styles['style:text-amplifiers/right'] = {
     ...amplifiers,
-    'font-size': 36,
     'text-anchor': 'start',
   }
 
   styles['style:text-amplifiers/top'] = {
     ...amplifiers,
-    'font-size': 36,
     'text-anchor': 'middle',
   }
 
   styles['style:text-amplifiers/bottom'] = {
     ...amplifiers,
-    'font-size': 36,
     'text-anchor': 'middle',
     'font-weight': 'bold'
   }
@@ -193,7 +190,7 @@ export const styles = function (meta, hints) {
 
   styles['style:text-amplifiers/outline'] = {
     stroke: hints.infoOutlineColor,
-    'stroke-width': hints.strokeWidth + hints.infoOutlineWidth * 2,
+    'stroke-width': hints.strokeWidth + hints.infoOutlineWidth,
     'stroke-linejoin': 'round',
     'stroke-linecap': 'round',
     zIndex: -1
@@ -202,6 +199,14 @@ export const styles = function (meta, hints) {
   styles['style:outline'] = {
     stroke: hints.outlineColor,
     'stroke-width': hints.strokeWidth + hints.outlineWidth * 2,
+    'stroke-linejoin': 'round',
+    'stroke-linecap': 'round',
+    zIndex: -1
+   }
+
+   styles['style:icon/outline'] = {
+    stroke: hints.outlineColor,
+    'stroke-width': hints.strokeWidth + hints.outlineWidth,
     'stroke-linejoin': 'round',
     'stroke-linecap': 'round',
     zIndex: -1

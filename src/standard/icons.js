@@ -10,7 +10,7 @@ const boxes = Object.entries(({ ...regular, ...skkm })).reduce((acc, [key, icon]
 }, {})
 
 
-const lookupInstructions = options => () => {
+const lookupInstructions = options => {
   if (special[options.generic]) return special[options.generic]
   else if (skkm[options.generic]) return skkm[options.generic]
   else {
@@ -45,8 +45,20 @@ const resolveStyles = options => instructions => {
 }
 
 export default options => {
-  const instruction = lookupInstructions(options)
-  const bbox = lookupBBox(options)
   const styles = resolveStyles(options)
-  return box => [bbox(box), styles(instruction())]
+  const instructions = lookupInstructions(options)
+  const bbox = lookupBBox(options)
+
+  const applyOutline = 
+    (!!options.outlineWidth && !!options.outlineColor) &&
+    (!options.frame || !!options.monoColor)
+  
+  const finalInstructions = applyOutline
+    ? [
+        ...styles(instructions), 
+        ...instructions.map(x => ({ ...x, ...options['style:icon/outline'] }))
+      ]
+    : styles(instructions)
+
+  return box => [bbox(box), finalInstructions]
 }
