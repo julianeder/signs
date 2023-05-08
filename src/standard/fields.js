@@ -50,7 +50,7 @@ const fromTemplate = (template, options) => box => {
 
   const makeText = (x, y, text) => ({
     type: 'text', x, y, text,
-    'dominant-baseline': 'hanging'
+    'dominant-baseline': 'text-bottom'
   })
 
   const makeGroup = (box, children, style) => ({
@@ -81,8 +81,8 @@ const fromTemplate = (template, options) => box => {
         : ['top', 'bottom', 'center'].includes(placement)
           ? extent[0] / 2
           : extent[0]
-
-      const text = (line, index) => makeText(x, index * dy, line)
+      const yOffset = options[style]['font-size']
+      const text = (line, index) => makeText(x, index * dy + yOffset, line)
       const children = lines.map(text)
       acc[1].push(makeGroup(box, children, options[style] ))
       if (options.infoOutline) acc[1].push(makeGroup(box, children, { ...options[style], ...options['style:text-amplifiers/outline'] }))
