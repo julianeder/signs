@@ -49,8 +49,7 @@ const fromTemplate = (template, options) => box => {
   }
 
   const makeText = (x, y, text) => ({
-    type: 'text', x, y, text,
-    'dominant-baseline': 'text-bottom'
+    type: 'text', x, y, text
   })
 
   const makeGroup = (box, children, style) => ({
@@ -70,7 +69,8 @@ const fromTemplate = (template, options) => box => {
       if (lines.filter(Boolean).length === 0) return acc
 
       const style = `style:text-amplifiers/${placement}`
-      const extent = Text.extent(lines, options[style]['font-size'])
+      const fontSize = options[style]['font-size']
+      const extent = Text.extent(lines, fontSize)
       // TODO: left/right placement: trim empty leading/trailing slots
       // TODO: left/right placement: vertical align center slot @ 100
       const box = boxes[placement](extent)
@@ -81,8 +81,7 @@ const fromTemplate = (template, options) => box => {
         : ['top', 'bottom', 'center'].includes(placement)
           ? extent[0] / 2
           : extent[0]
-      const yOffset = options[style]['font-size']
-      const text = (line, index) => makeText(x, index * dy + yOffset, line)
+      const text = (line, index) => makeText(x, fontSize + index * dy, line)
       const children = lines.map(text)
       acc[1].push(makeGroup(box, children, options[style] ))
       if (options.infoOutline) acc[1].push(makeGroup(box, children, { ...options[style], ...options['style:text-amplifiers/outline'] }))
